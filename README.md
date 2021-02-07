@@ -1,11 +1,19 @@
-# My Personal Project
+# My Personal Library
 
-## A subtitle
+## A desktop application for sorting, rating, and tracking books
 
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
+This application intends to be a digital bookshelf that allows users to:
+- Input a book they have read (including author, title, genre, when they started/finished reading the book etc.)
+- Rate their books (on a 10-point scale)
+- Post reviews of their books
+- Sort their books onto customizable bookshelves (to-read, favourites, currently reading etc.)
 
-An example of text with **bold** and *italic* fonts.  Note that the IntelliJ markdown previewer doesn't seem to render 
-the bold and italic fonts correctly but they will appear correctly on GitHub.
+This intends to be an application for personal use, to help users keep track of the books they have read and loved.
+It can also work as a way for students to keep track of the book they read in university, for parents to track which 
+picture books their kids responded to, or any number of other uses specific to the user. 
+
+This project is of particular interest to me as a big reader who likes to track their reading progress throughout the 
+year. As someone who doesn't buy most of my books, I can't rely on looking at my bookshelf to remember which books I've 
+read in the past year. However, I want to be able to remember which books I read and how I felt about them in order to 
+help me choose my next reads. **Therefore, this application should be of particular use to users like myself who read a 
+lot of library books and ebooks, and want a way to keep all of their reads in one place.**
