@@ -83,7 +83,7 @@ public class MyBookRoom {
         for (Bookshelf b: bookRoom.getShelves()) {
             System.out.println(b.getBookshelfLabel());
         }
-        System.out.print("Input name of bookshelf:");
+        System.out.print("Input name of bookshelf or 'new' if you want to add it to a new bookshelf:");
         String label = input.next();
 
 
