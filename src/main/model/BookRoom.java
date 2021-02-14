@@ -12,7 +12,19 @@ public class BookRoom {
         shelves = new ArrayList<>();
     }
 
-    public void addNewShelf(Bookshelf bookshelf) {
+    public void addShelfToRoom(Bookshelf bookshelf) {
         this.shelves.add(bookshelf);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public List<Bookshelf> getShelves() {
+        return shelves;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -4,6 +4,6 @@ import model.BookRoom;
 
 public class Main {
     public static void main(String[] args) {
-        new BookRoom("My Book Room");
+        new MyBookRoom();
     }
 }

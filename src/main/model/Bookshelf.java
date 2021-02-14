@@ -7,13 +7,13 @@ public class Bookshelf {
     private String bookshelfLabel;
     private List<Book> books;
 
-    public Bookshelf(String name) {
-        this.bookshelfLabel = name;
+    public Bookshelf(String label) {
+        this.bookshelfLabel = label;
         books = new ArrayList<>();
     }
 
-    public void addToShelf(Book bk) {
-        this.books.add(bk);
+    public void addBookToShelf(Book book) {
+        this.books.add(book);
     }
 
     public String getBookshelfLabel() {

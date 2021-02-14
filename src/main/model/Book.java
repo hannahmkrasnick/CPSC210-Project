@@ -1,33 +1,36 @@
 package model;
 
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Book {
     private String title;
     private String author;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int rating;
     private String review;
     private Genre genre;
-    private long dateAdded;
+    private LocalDate dateAdded;
 
 
     //REQUIRES:
     //MODIFIES:
     //EFFECTS:
-    public Book(String title, String author, Genre genre) {
+    public Book(String title) {
         this.title = title;
-        this.author = author;
-        this.genre = genre;
+        this.author = null;
+        genre = null;
         rating = 0;
-        review = "";
+        review = null;
         startDate = null;
         endDate = null;
-        dateAdded = System.currentTimeMillis();
+        dateAdded = LocalDate.now();
     }
 
+    // getters
     public String getTitle() {
         return title;
     }
@@ -36,11 +39,11 @@ public class Book {
         return author;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
@@ -56,10 +59,11 @@ public class Book {
         return genre;
     }
 
-    public long getDateAdded() {
+    public LocalDate getDateAdded() {
         return dateAdded;
     }
 
+    // setters
     public void setTitle(String title) {
         this.title = title;
     }
@@ -68,11 +72,11 @@ public class Book {
         this.author = author;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
