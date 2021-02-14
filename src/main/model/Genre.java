@@ -14,5 +14,6 @@ public enum Genre {
     YOUNGADULT,
     GRAPHIC,
     COMIC,
-    BOARD
+    BOARD,
+    UNCLASSIFIED
 }

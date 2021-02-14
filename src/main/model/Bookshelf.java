@@ -16,6 +16,10 @@ public class Bookshelf {
         this.books.add(book);
     }
 
+    public void removeBookFromShelf(Book book) {
+        this.books.remove(book);
+    }
+
     public String getBookshelfLabel() {
         return bookshelfLabel;
     }

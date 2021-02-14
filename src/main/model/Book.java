@@ -18,10 +18,10 @@ public class Book {
     //EFFECTS:
     public Book(String title) {
         this.title = title;
-        this.author = null;
-        genre = null;
+        this.author = "";
+        genre = Genre.UNCLASSIFIED;
         rating = 0;
-        review = null;
+        review = "";
     }
 
     // getters

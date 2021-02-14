@@ -16,10 +16,10 @@ class BookTest {
     @Test
     void testConstructor() {
         assertEquals("ABC", testBook.getTitle());
-        assertTrue(testBook.getAuthor()==null);
-        assertTrue(testBook.getGenre()==null);
+        assertEquals("", testBook.getAuthor());
+        assertEquals(Genre.UNCLASSIFIED, testBook.getGenre());
         assertEquals(0, testBook.getRating());
-        assertTrue(testBook.getReview()==null);
+        assertEquals("", testBook.getReview());
     }
 
     @Test

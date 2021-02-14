@@ -3,8 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BookshelfTest {
     private Bookshelf testBookshelf1;
@@ -28,6 +27,14 @@ public class BookshelfTest {
     void testAddBook() {
         testBookshelf1.addBookToShelf(testBook1);
         assertTrue(testBookshelf1.getBooks().contains(testBook1));
+    }
+
+    @Test
+    void testRemoveBook() {
+        testBookshelf1.addBookToShelf(testBook1);
+        assertTrue(testBookshelf1.getBooks().contains(testBook1));
+        testBookshelf1.removeBookFromShelf(testBook1);
+        assertFalse(testBookshelf1.getBooks().contains(testBook1));
     }
 
     @Test
