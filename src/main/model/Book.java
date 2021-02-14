@@ -8,12 +8,9 @@ import java.util.Date;
 public class Book {
     private String title;
     private String author;
-    private LocalDate startDate;
-    private LocalDate endDate;
     private int rating;
     private String review;
     private Genre genre;
-    private LocalDate dateAdded;
 
 
     //REQUIRES:
@@ -25,9 +22,6 @@ public class Book {
         genre = null;
         rating = 0;
         review = null;
-        startDate = null;
-        endDate = null;
-        dateAdded = LocalDate.now();
     }
 
     // getters
@@ -37,14 +31,6 @@ public class Book {
 
     public String getAuthor() {
         return author;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
     }
 
     public int getRating() {
@@ -59,10 +45,6 @@ public class Book {
         return genre;
     }
 
-    public LocalDate getDateAdded() {
-        return dateAdded;
-    }
-
     // setters
     public void setTitle(String title) {
         this.title = title;
@@ -70,14 +52,6 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public void setRating(int rating) {
