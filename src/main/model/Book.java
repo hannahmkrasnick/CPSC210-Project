@@ -1,10 +1,6 @@
 package model;
 
-
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-
+// Represents a book having a title, author, genre, rating, and review
 public class Book {
     private String title;
     private String author;
@@ -13,9 +9,9 @@ public class Book {
     private Genre genre;
 
 
-    //REQUIRES:
-    //MODIFIES:
-    //EFFECTS:
+    //REQUIRES: book title has non-zero length
+    //EFFECTS: creates a book with given title, empty string for title and review, genre set to unclassified, and rating
+    //         initialized at 0
     public Book(String title) {
         this.title = title;
         this.author = "";

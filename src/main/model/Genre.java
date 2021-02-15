@@ -1,5 +1,6 @@
 package model;
 
+// Represents all genres a book can be assigned to
 public enum Genre {
     CLASSIC,
     COOKBOOK,

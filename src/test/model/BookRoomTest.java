@@ -3,8 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BookRoomTest {
     private BookRoom testBookRoom;
@@ -21,7 +20,7 @@ public class BookRoomTest {
 
     @Test
     void testConstructor() {
-        assertEquals("Hannah", testBookRoom.getUsername());
+        assertEquals("Hannah", testBookRoom.getName());
         assertTrue((testBookRoom.getShelves().isEmpty()));
     }
 
@@ -31,12 +30,14 @@ public class BookRoomTest {
         testBookRoom.addShelfToRoom(testBookshelf2);
         assertTrue(testBookRoom.getShelves().contains(testBookshelf1));
         assertTrue(testBookRoom.getShelves().contains(testBookshelf2));
-
     }
 
     @Test
-    void testChangeUsername() {
-        testBookRoom.setUsername("Thunder");
-        assertEquals("Thunder", testBookRoom.getUsername());
+    void testDeleteShelfFromRoom() {
+        testBookRoom.addShelfToRoom(testBookshelf1);
+        testBookRoom.addShelfToRoom(testBookshelf2);
+        testBookRoom.deleteShelfFromRoom(testBookshelf1);
+        assertFalse(testBookRoom.getShelves().contains(testBookshelf1));
+        assertTrue(testBookRoom.getShelves().contains(testBookshelf2));
     }
 }
