@@ -28,6 +28,30 @@ public class BookRoom {
         this.shelves.remove(bookshelf);
     }
 
+    // EFFECTS: checks if the given label isn't already the label of an existing bookshelf in the room
+    public boolean checkBookshelfDoesNotAlreadyExist(String label) {
+        label = label.toLowerCase();
+        for (Bookshelf b : this.getShelves()) {
+            if (b.getBookshelfLabel().toLowerCase().equals(label)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // EFFECTS: checks if a book with same title is already in room
+    public boolean checkBookDoesNotAlreadyExist(String title) {
+        title = title.toLowerCase();
+        for (Bookshelf b : this.getShelves()) {
+            for (Book book : b.getBooks()) {
+                if (book.getTitle().toLowerCase().equals(title)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     //getters
     public String getName() {
         return name;

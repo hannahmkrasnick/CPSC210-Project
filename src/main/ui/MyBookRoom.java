@@ -96,7 +96,7 @@ public class MyBookRoom {
         System.out.print("Enter title of your book: ");
         String title = input.next();
         title += input.nextLine();
-        if (checkBookDoesNotAlreadyExist(title)) {
+        if (bookRoom.checkBookDoesNotAlreadyExist(title)) {
             Book newBook = new Book(title);
             allBooks.addBookToShelf(newBook);
             System.out.println(title + " has been added to your Book Room");
@@ -107,26 +107,13 @@ public class MyBookRoom {
         }
     }
 
-    // EFFECTS: checks if a book with same title is already in room
-    private boolean checkBookDoesNotAlreadyExist(String title) {
-        title = title.toLowerCase();
-        for (Bookshelf b : bookRoom.getShelves()) {
-            for (Book book : b.getBooks()) {
-                if (book.getTitle().toLowerCase().equals(title)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     // MODIFIES: this
     // EFFECTS: adds a new shelf to the room
     private void addNewShelf() {
         System.out.println("What would you like to call your new bookshelf?");
         String label = input.next();
         label += input.nextLine();
-        if (checkBookshelfDoesNotAlreadyExist(label)) {
+        if (bookRoom.checkBookshelfDoesNotAlreadyExist(label)) {
             Bookshelf newShelf = new Bookshelf(label);
             bookRoom.addShelfToRoom(newShelf);
             System.out.println("Bookshelf " + label + " has been added to your Book Room");
@@ -308,7 +295,7 @@ public class MyBookRoom {
         System.out.print("Enter title of book: ");
         String title = input.next();
         title += input.nextLine();
-        if (checkBookDoesNotAlreadyExist(title)) {
+        if (bookRoom.checkBookDoesNotAlreadyExist(title)) {
             book.setTitle(title);
             System.out.println("Title of book has been set to " + title);
             editBookInfo(book);
@@ -339,7 +326,7 @@ public class MyBookRoom {
         System.out.print("Enter genre: ");
         String newGenre = input.next();
         newGenre = newGenre.toUpperCase();
-        if (checkGenreExists(newGenre)) {
+        if (Genre.checkGenreExists(newGenre)) {
             book.setGenre(Genre.valueOf(newGenre));
             System.out.println("Genre of " + book.getTitle() + " has been set to " + newGenre);
             editBookInfo(book);
@@ -347,16 +334,6 @@ public class MyBookRoom {
             System.out.println("Please input valid genre.");
             editBookGenre(book);
         }
-    }
-
-    // EFFECTS: checks if genre is valid
-    public boolean checkGenreExists(String str) {
-        for (Genre me : Genre.values()) {
-            if (me.name().equalsIgnoreCase(str)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // MODIFIES: book
@@ -421,6 +398,11 @@ public class MyBookRoom {
         shelfName += input.nextLine();
         for (Bookshelf b : bookRoom.getShelves()) {
             if (b.getBookshelfLabel().toLowerCase().equals(shelfName)) {
+                System.out.println("Bookshelf: " + b.getBookshelfLabel());
+                System.out.println("Contains: ");
+                for (Book book : b.getBooks()) {
+                    System.out.println("\t" + book.getTitle());
+                }
                 System.out.println("Enter e to edit bookshelf name, d to delete shelf,"
                         + " or b to add/remove books on this shelf");
                 String command = input.next();
@@ -475,7 +457,7 @@ public class MyBookRoom {
         System.out.print("Enter new name for bookshelf: ");
         String response = input.next();
         response += input.nextLine();
-        if (checkBookshelfDoesNotAlreadyExist(response)) {
+        if (bookRoom.checkBookshelfDoesNotAlreadyExist(response)) {
             bookshelf.setBookshelfLabel(response);
             System.out.println("Bookshelf name has been changed to " + response);
         } else {
@@ -563,17 +545,6 @@ public class MyBookRoom {
                 System.out.println("\t\t" + book.getTitle());
             }
         }
-    }
-
-    // EFFECTS: checks if the given label isn't already the label of an existing bookshelf
-    private boolean checkBookshelfDoesNotAlreadyExist(String label) {
-        label = label.toLowerCase();
-        for (Bookshelf b : bookRoom.getShelves()) {
-            if (b.getBookshelfLabel().toLowerCase().equals(label)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

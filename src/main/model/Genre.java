@@ -16,5 +16,15 @@ public enum Genre {
     GRAPHIC,
     COMIC,
     BOARD,
-    UNCLASSIFIED
+    UNCLASSIFIED;
+
+    // EFFECTS: checks if genre is valid (i.e. it exists)
+    public static boolean checkGenreExists(String str) {
+        for (Genre me : Genre.values()) {
+            if (me.name().equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
