@@ -282,7 +282,7 @@ public class MyBookRoom {
         System.out.println(book.getTitle() + " is on the following shelves:");
         for (Bookshelf b : bookRoom.getShelves()) {
             for (Book c : b.getBooks()) {
-                if (c.getTitle().toLowerCase().equals(book.getTitle())) {
+                if (c.getTitle().toLowerCase().equals(book.getTitle().toLowerCase())) {
                     System.out.println(b.getBookshelfLabel());
                 }
             }
@@ -394,8 +394,8 @@ public class MyBookRoom {
     // EFFECTS: asks user to choose bookshelf they want to edit and gives choices for how to edit the shelf
     private void editBookshelf() {
         System.out.println("Enter the name of the bookshelf you would like to edit: ");
-        String shelfName = input.next();
-        shelfName += input.nextLine();
+        String shelfName = input.next().toLowerCase();
+        shelfName += input.nextLine().toLowerCase();
         for (Bookshelf b : bookRoom.getShelves()) {
             if (b.getBookshelfLabel().toLowerCase().equals(shelfName)) {
                 System.out.println("Bookshelf: " + b.getBookshelfLabel());
@@ -480,7 +480,7 @@ public class MyBookRoom {
         }
     }
 
-    // MODIFIES: bookshelf
+    // MODIFIES: bookshelf and book
     // EFFECTS: checks if user input is valid book and adds book to given bookshelf
     private void addBookToGivenShelf(Bookshelf bookshelf) {
         viewAllBooks();

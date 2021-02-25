@@ -27,3 +27,5 @@ title, author, genre) and rate and review these books at any time
 - As a user, I want to be able to sort my books onto "bookshelves" that I can label myself, and I want a 
 book to be able to appear on more than one bookshelf
 - As a user, I want to be view my shelves and which books are on those shelves
+- As a user, I want to be able to save my Book Room to file
+- As a user, I want to be able to load my Book Room from file
