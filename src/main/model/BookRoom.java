@@ -1,12 +1,16 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // Represents book room with a name and list of bookshelves
-public class BookRoom {
-    private String name;
-    private List<Bookshelf> shelves;
+public class BookRoom implements Writable {
+    private final String name;
+    private final List<Bookshelf> shelves;
 
     //REQUIRES: book room name has non-zero length
     //EFFECTS: creates a room with given name and empty list of bookshelves
@@ -43,7 +47,7 @@ public class BookRoom {
     public boolean checkBookDoesNotAlreadyExist(String title) {
         title = title.toLowerCase();
         for (Bookshelf b : this.getShelves()) {
-            for (Book book : b.getBooks()) {
+            for (Book book : b.getBooksOnShelf()) {
                 if (book.getTitle().toLowerCase().equals(title)) {
                     return false;
                 }
@@ -59,5 +63,37 @@ public class BookRoom {
 
     public List<Bookshelf> getShelves() {
         return shelves;
+    }
+
+    public List<Book> getBooks() {
+        List<Book> books = new ArrayList<>();
+
+        for (Bookshelf bs : shelves) {
+            if (bs.getBookshelfLabel().equals("All Books")) {
+                books.addAll(bs.getBooksOnShelf());
+            }
+        }
+        return books;
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoom.toJson)
+    // EFFECTS: returns JSON object representation of bookroom
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("bookshelves", bookshelvesToJson());
+        return json;
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoom.thingiesToJson)
+    // EFFECTS: returns shelves in this bookroom as a JSON array
+    private JSONArray bookshelvesToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Bookshelf b : shelves) {
+            jsonArray.put(b.toJson());
+        }
+        return jsonArray;
     }
 }

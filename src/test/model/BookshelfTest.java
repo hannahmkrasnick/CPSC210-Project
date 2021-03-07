@@ -20,29 +20,29 @@ public class BookshelfTest {
     @Test
     void testConstructor() {
         assertEquals("Bookshelf 1", testBookshelf1.getBookshelfLabel());
-        assertTrue((testBookshelf1.getBooks().isEmpty()));
+        assertTrue((testBookshelf1.getBooksOnShelf().isEmpty()));
     }
 
     @Test
     void testAddBook() {
         testBookshelf1.addBookToShelf(testBook1);
-        assertTrue(testBookshelf1.getBooks().contains(testBook1));
+        assertTrue(testBookshelf1.getBooksOnShelf().contains(testBook1));
     }
 
     @Test
     void testRemoveBook() {
         testBookshelf1.addBookToShelf(testBook1);
-        assertTrue(testBookshelf1.getBooks().contains(testBook1));
+        assertTrue(testBookshelf1.getBooksOnShelf().contains(testBook1));
         testBookshelf1.removeBookFromShelf(testBook1);
-        assertFalse(testBookshelf1.getBooks().contains(testBook1));
+        assertFalse(testBookshelf1.getBooksOnShelf().contains(testBook1));
     }
 
     @Test
     void testAddBookAlreadyOnDifferentShelf() {
         testBookshelf1.addBookToShelf(testBook1);
         testBookshelf2.addBookToShelf(testBook1);
-        assertTrue(testBookshelf1.getBooks().contains(testBook1));
-        assertTrue(testBookshelf2.getBooks().contains(testBook1));
+        assertTrue(testBookshelf1.getBooksOnShelf().contains(testBook1));
+        assertTrue(testBookshelf2.getBooksOnShelf().contains(testBook1));
     }
 
     @Test

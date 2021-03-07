@@ -2,21 +2,23 @@ package model;
 
 // Represents all genres a book can be assigned to
 public enum Genre {
+    BOARD,
     CLASSIC,
+    COMIC,
     COOKBOOK,
     EASYCHAPTER,
+    FANTASY,
     FICTION,
+    GRAPHIC,
     MIDDLEGRADE,
     NONFICTION,
     PICTUREBOOK,
     READER,
     REFERENCE,
+    SELFHELP,
     TEXTBOOK,
-    YOUNGADULT,
-    GRAPHIC,
-    COMIC,
-    BOARD,
-    UNCLASSIFIED;
+    UNCLASSIFIED,
+    YOUNGADULT;
 
     // EFFECTS: checks if genre is valid (i.e. it exists)
     public static boolean checkGenreExists(String str) {

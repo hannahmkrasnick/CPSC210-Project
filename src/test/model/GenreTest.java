@@ -10,5 +10,7 @@ public class GenreTest {
     void testCheckGenreExists() {
         assertFalse(Genre.checkGenreExists("happy"));
         assertTrue(Genre.checkGenreExists("fiction"));
+        assertTrue(Genre.checkGenreExists("FANTASY"));
+
     }
 }

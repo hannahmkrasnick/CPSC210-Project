@@ -4,22 +4,25 @@ import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
 import model.Genre;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 // Book Room application
 public class MyBookRoom {
+    private static final String JSON_STORE = "./data/bookroom.json";
     private BookRoom bookRoom;
     private Scanner input;
     private Bookshelf allBooks;
-    private Bookshelf toRead;
-    private Bookshelf completed;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
 
     // EFFECTS: runs the BookRoom application
-    public MyBookRoom() {
+    public MyBookRoom() throws FileNotFoundException {
         runBookRoom();
     }
 
@@ -48,14 +51,17 @@ public class MyBookRoom {
     // MODIFIES: this
     // EFFECTS: initializes BookRoom with number of bookshelves
     private void init() {
+        Bookshelf toRead = new Bookshelf("To Read");
+        Bookshelf completed = new Bookshelf("Completed");
+
         bookRoom = new BookRoom("My Book Room");
         allBooks = new Bookshelf("All Books");
-        toRead = new Bookshelf("To Read");
-        completed = new Bookshelf("Completed");
         bookRoom.addShelfToRoom(allBooks);
         bookRoom.addShelfToRoom(toRead);
         bookRoom.addShelfToRoom(completed);
         input = new Scanner(System.in);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     // EFFECTS: displays menu of options
@@ -65,6 +71,8 @@ public class MyBookRoom {
         System.out.println("\tv: View information about a book");
         System.out.println("\tb: View my bookshelves");
         System.out.println("\tr: View my Book Room");
+        System.out.println("\ts: Save my Book Room to file");
+        System.out.println("\tl: load my Book Room from file");
         System.out.println("\te: Exit");
     }
 
@@ -84,21 +92,26 @@ public class MyBookRoom {
             case "r":
                 viewBookRoom();
                 break;
+            case "s":
+                saveBookRoom();
+                break;
+            case "l":
+                loadBookRoom();
+                break;
             default:
                 System.out.print("Please enter a valid input.");
                 break;
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this and allBooks
     // EFFECTS: adds new book to room and to shelf All Books
     private void addNewBook() {
         System.out.print("Enter title of your book: ");
-        String title = input.next();
-        title += input.nextLine();
+        String title = input.next() + input.nextLine();
         if (bookRoom.checkBookDoesNotAlreadyExist(title)) {
             Book newBook = new Book(title);
-            allBooks.addBookToShelf(newBook);
+            getAllBooksShelf().addBookToShelf(newBook);
             System.out.println(title + " has been added to your Book Room");
             editBookInfo(newBook);
         } else {
@@ -111,15 +124,13 @@ public class MyBookRoom {
     // EFFECTS: adds a new shelf to the room
     private void addNewShelf() {
         System.out.println("What would you like to call your new bookshelf?");
-        String label = input.next();
-        label += input.nextLine();
+        String label = input.next() + input.nextLine();
         if (bookRoom.checkBookshelfDoesNotAlreadyExist(label)) {
             Bookshelf newShelf = new Bookshelf(label);
             bookRoom.addShelfToRoom(newShelf);
             System.out.println("Bookshelf " + label + " has been added to your Book Room");
         } else {
-            System.out.println("Please enter the name of a bookshelf that doesn't already exist.");
-            addNewShelf();
+            System.out.println("Cannot add bookshelf that already exists.");
         }
     }
 
@@ -128,29 +139,25 @@ public class MyBookRoom {
     private void chooseBookToView() {
         viewAllBooks();
         System.out.print("Enter name of book you'd like to view: ");
-        String bookName = input.next();
-        bookName += input.nextLine();
-        bookName = bookName.toLowerCase();
-        int foundAtSpace = -1;
-        int tracker = 0;
-        for (Book book : allBooks.getBooks()) {
-            tracker++;
-            if (book.getTitle().toLowerCase().equals(bookName)) {
-                foundAtSpace = tracker;
-                viewBookInfo(book);
-                editBookInfo(book);
+        String bookName = input.next().toLowerCase() + input.nextLine().toLowerCase();
+        int checkValid = -1;
+        for (Book b : getAllBooksShelf().getBooksOnShelf()) {
+            if (b.getTitle().toLowerCase().equals(bookName)) {
+                checkValid = 0;
+                viewBookInfo(b);
+                editBookInfo(b);
                 break;
             }
         }
-        if (foundAtSpace < 0) {
+        if (checkValid < 0) {
             System.out.println("Invalid name.");
         }
     }
 
-    // EFFECTS: prints out title of all books for user to view
+    // EFFECTS: prints out titles of all books
     private void viewAllBooks() {
         System.out.println("Your books:");
-        for (Book book : allBooks.getBooks()) {
+        for (Book book : bookRoom.getBooks()) {
             System.out.println(book.getTitle());
         }
     }
@@ -170,8 +177,7 @@ public class MyBookRoom {
     // EFFECTS: allows user to choose which information about book user would like to edit
     private void editBookInfo(Book book) {
         System.out.print("Would you like to add/edit information about this book? Enter y or n: ");
-        String answer = input.next();
-        answer = answer.toLowerCase();
+        String answer = input.next().toLowerCase();
         if (answer.equals("y")) {
             viewBookInfo(book);
             System.out.println("\nWhat information would you like to edit? "
@@ -183,8 +189,7 @@ public class MyBookRoom {
     // MODIFIES: book
     // EFFECTS: process user command of what part of book information they would like to edit
     private void processEditBookCommand(Book book) {
-        String editCommand = input.next();
-        editCommand = editCommand.toLowerCase();
+        String editCommand = input.next().toLowerCase();
         switch (editCommand) {
             case "title": editBookTitle(book);
                 break;
@@ -213,41 +218,10 @@ public class MyBookRoom {
         viewShelvesBookIsOn(book);
         System.out.print("Would you like to remove or add " + book.getTitle()
                 + " from/to a shelf? Enter remove or add: ");
-        String response = input.next();
-        response = response.toLowerCase();
+        String response = input.next().toLowerCase();
         if (response.equals("remove")) {
             removeBookFromShelf(book);
         } else if (response.equals("add")) {
-            addBookToShelf(book);
-        }
-    }
-
-    //solution adapted from: https://stackoverflow.com/questions/3779514/java-for-loop-and-if-algorithm
-    // REQUIRES: input that is existing bookshelf
-    // MODIFIES: this
-    // EFFECTS: adds book to a shelf the user selects
-    private void addBookToShelf(Book book) {
-        System.out.println("You have the following bookshelves in your Book Room:");
-        for (Bookshelf bookshelf : bookRoom.getShelves()) {
-            System.out.println(bookshelf.getBookshelfLabel());
-        }
-        System.out.print("Enter the name of the bookshelf you would like to add " + book.getTitle() + " to: ");
-        String addShelf = input.next();
-        addShelf += input.nextLine();
-        addShelf = addShelf.toLowerCase();
-        int foundAtSpace = -1;
-        int tracker = 0;
-        for (Bookshelf bookshelf : bookRoom.getShelves()) {
-            tracker++;
-            if (bookshelf.getBookshelfLabel().toLowerCase().equals(addShelf)) {
-                foundAtSpace = tracker;
-                bookshelf.addBookToShelf(book);
-                System.out.println(book.getTitle() + " has been added to " + bookshelf.getBookshelfLabel());
-                break;
-            }
-        }
-        if (foundAtSpace < 0) {
-            System.out.println("Invalid name.");
             addBookToShelf(book);
         }
     }
@@ -257,51 +231,53 @@ public class MyBookRoom {
     // EFFECTS: removes book from a shelf the user selects
     private void removeBookFromShelf(Book book) {
         System.out.print("Enter the name of the bookshelf you would like to remove " + book.getTitle() + " from: ");
-        String removeShelf = input.next();
-        removeShelf += input.nextLine();
-        removeShelf = removeShelf.toLowerCase();
+        String removeShelf = input.next().toLowerCase() + input.nextLine().toLowerCase();
         if (removeShelf.equals("all books")) {
-            System.out.println("If you remove " + book.getTitle()
-                    + " from All Books it will be deleted from your Book Room. Enter y to proceed: ");
-            String answer = input.next();
-            if (answer.equals("y")) {
-                deleteBookFromRoom(book);
-            }
+            confirmDeleteBookFromAllBooks(book);
         } else {
-            for (Bookshelf bookshelf : bookRoom.getShelves()) {
-                if (bookshelf.getBookshelfLabel().toLowerCase().equals(removeShelf)) {
-                    bookshelf.removeBookFromShelf(book);
-                    System.out.println(book.getTitle() + " has been removed from " + bookshelf.getBookshelfLabel());
+            for (Bookshelf bs : bookRoom.getShelves()) {
+                if (bs.getBookshelfLabel().toLowerCase().equals(removeShelf)) {
+                    bs.removeBookFromShelf(book);
+                    System.out.println(book.getTitle() + " has been removed from " + bs.getBookshelfLabel());
                 }
             }
+        }
+    }
+
+    // MODIFIES: book, bookroom
+    // EFFECTS: confirms that user wants to delete book from bookroom, and deletes it
+    private void confirmDeleteBookFromAllBooks(Book book) {
+        System.out.println("If you remove " + book.getTitle()
+                + " from All Books it will be deleted from your Book Room. Enter y to proceed: ");
+        String answer = input.next().toLowerCase();
+        if (answer.equals("y")) {
+            deleteBookFromRoom(book);
         }
     }
 
     // EFFECTS: displays the shelves given book is on
     private void viewShelvesBookIsOn(Book book) {
         System.out.println(book.getTitle() + " is on the following shelves:");
-        for (Bookshelf b : bookRoom.getShelves()) {
-            for (Book c : b.getBooks()) {
-                if (c.getTitle().toLowerCase().equals(book.getTitle().toLowerCase())) {
-                    System.out.println(b.getBookshelfLabel());
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            for (Book b : bs.getBooksOnShelf()) {
+                if (b.getTitle().equals(book.getTitle())) {
+                    System.out.println(bs.getBookshelfLabel());
                 }
             }
         }
     }
 
     // MODIFIES: book
-    // EFFECTS: changes book title to input if input not already title of existing book in room
+    // EFFECTS: changes book title to input if input not already title of existing Book in room (can be same as book)
     private void editBookTitle(Book book) {
         System.out.print("Enter title of book: ");
-        String title = input.next();
-        title += input.nextLine();
-        if (bookRoom.checkBookDoesNotAlreadyExist(title)) {
+        String title = input.next() + input.nextLine();
+        if (book.getTitle().toLowerCase().equals(title.toLowerCase()) || bookRoom.checkBookDoesNotAlreadyExist(title)) {
             book.setTitle(title);
             System.out.println("Title of book has been set to " + title);
             editBookInfo(book);
         } else {
-            System.out.println("Cannot add book with duplicate title to Book Room. Please enter a valid name");
-            editBookTitle(book);
+            System.out.println("Cannot have book with duplicate title in Book Room.");
         }
     }
 
@@ -309,8 +285,7 @@ public class MyBookRoom {
     // EFFECTS: changes book author to input
     private void editBookAuthor(Book book) {
         System.out.print("Enter name of author: ");
-        String name = input.next();
-        name += input.nextLine();
+        String name = input.next() + input.nextLine();
         book.setAuthor(name);
         System.out.println("Author of " + book.getTitle() + " has been set to " + name);
         editBookInfo(book);
@@ -324,15 +299,13 @@ public class MyBookRoom {
             System.out.println(genre);
         }
         System.out.print("Enter genre: ");
-        String newGenre = input.next();
-        newGenre = newGenre.toUpperCase();
+        String newGenre = input.next().toUpperCase();
         if (Genre.checkGenreExists(newGenre)) {
             book.setGenre(Genre.valueOf(newGenre));
             System.out.println("Genre of " + book.getTitle() + " has been set to " + newGenre);
             editBookInfo(book);
         } else {
-            System.out.println("Please input valid genre.");
-            editBookGenre(book);
+            System.out.println("Invalid genre.");
         }
     }
 
@@ -348,7 +321,6 @@ public class MyBookRoom {
             editBookInfo(book);
         } else {
             System.out.println("Input invalid.");
-            editBookRating(book);
         }
     }
 
@@ -356,8 +328,7 @@ public class MyBookRoom {
     // EFFECTS: changes book review to input
     private void editBookReview(Book book) {
         System.out.print("Enter your review of this book: ");
-        String review = input.next();
-        review += input.nextLine();
+        String review = input.next() + input.nextLine();
         book.setReview(review);
         System.out.println("Review of " + book.getTitle() + " has been changed");
         editBookInfo(book);
@@ -366,8 +337,8 @@ public class MyBookRoom {
     // EFFECTS: displays list of bookshelves for user and checks if user wants to edit said bookshelves
     private void viewBookshelves() {
         System.out.println("Your bookshelves: ");
-        for (Bookshelf b : bookRoom.getShelves()) {
-            System.out.println("\t" + b.getBookshelfLabel());
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            System.out.println("\t" + bs.getBookshelfLabel());
         }
         editBookshelves();
     }
@@ -376,11 +347,10 @@ public class MyBookRoom {
     // EFFECTS: checks if user wants to edit their bookshelves or add a new one
     private void editBookshelves() {
         System.out.println("Would you like to edit your bookshelves? Enter y or n.");
-        String answer = input.next();
+        String answer = input.next().toLowerCase();
         if (answer.equals("y")) {
             System.out.println("Would you like to edit your existing bookshelves or add a new one? Enter edit or add.");
-            String response = input.next();
-            response += input.nextLine();
+            String response = input.next().toLowerCase();
             if (response.equals("add")) {
                 addNewShelf();
             } else if (response.equals("edit")) {
@@ -394,24 +364,23 @@ public class MyBookRoom {
     // EFFECTS: asks user to choose bookshelf they want to edit and gives choices for how to edit the shelf
     private void editBookshelf() {
         System.out.println("Enter the name of the bookshelf you would like to edit: ");
-        String shelfName = input.next().toLowerCase();
-        shelfName += input.nextLine().toLowerCase();
-        for (Bookshelf b : bookRoom.getShelves()) {
-            if (b.getBookshelfLabel().toLowerCase().equals(shelfName)) {
-                System.out.println("Bookshelf: " + b.getBookshelfLabel());
+        String shelfName = input.next().toLowerCase() + input.nextLine().toLowerCase();
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            if (bs.getBookshelfLabel().toLowerCase().equals(shelfName)) {
+                System.out.println("Bookshelf: " + bs.getBookshelfLabel());
                 System.out.println("Contains: ");
-                for (Book book : b.getBooks()) {
+                for (Book book : bs.getBooksOnShelf()) {
                     System.out.println("\t" + book.getTitle());
                 }
                 System.out.println("Enter e to edit bookshelf name, d to delete shelf,"
                         + " or b to add/remove books on this shelf");
-                String command = input.next();
+                String command = input.next().toLowerCase();
                 if ("e".equals(command)) {
-                    editBookshelfName(b);
+                    editBookshelfName(bs);
                 } else if ("d".equals(command)) {
-                    deleteShelf(b);
+                    deleteShelf(bs);
                 } else if ("b".equals(command)) {
-                    editBooksOnShelf(b);
+                    editBooksOnShelf(bs);
                 }
                 break;
             }
@@ -422,17 +391,17 @@ public class MyBookRoom {
     // MODIFIES: this
     // EFFECTS: deletes the bookshelf from the room
     private void deleteShelf(Bookshelf bookshelf) {
-        if (bookshelf.getBookshelfLabel().equals(allBooks.getBookshelfLabel())) {
+        if (bookshelf.getBookshelfLabel().equals(getAllBooksShelf().getBookshelfLabel())) {
             System.out.println("Cannot delete shelf All Books.");
         } else {
-            List<Bookshelf> shelfToRemove = new ArrayList<Bookshelf>();
+            Bookshelf shelfToRemove = new Bookshelf("");
 
-            for (Bookshelf shelf : bookRoom.getShelves()) {
-                if (shelf.getBookshelfLabel().equals(bookshelf.getBookshelfLabel())) {
-                    shelfToRemove.add(shelf);
+            for (Bookshelf bs : bookRoom.getShelves()) {
+                if (bs.getBookshelfLabel().equals(bookshelf.getBookshelfLabel())) {
+                    shelfToRemove = bs;
                 }
             }
-            bookRoom.getShelves().removeAll(shelfToRemove);
+            bookRoom.getShelves().remove(shelfToRemove);
             System.out.println("Shelf has been deleted");
         }
     }
@@ -440,11 +409,10 @@ public class MyBookRoom {
     // MODIFIES: book & this
     // EFFECTS: deletes the book from the room by removing it from all bookshelves it's on
     private void deleteBookFromRoom(Book book) {
-        allBooks.removeBookFromShelf(book);
-        for (Bookshelf bookshelf: bookRoom.getShelves()) {
-            for (Book b : bookshelf.getBooks()) {
+        for (Bookshelf bs: bookRoom.getShelves()) {
+            for (Book b : bs.getBooksOnShelf()) {
                 if (b.getTitle().equals(book.getTitle())) {
-                    bookshelf.removeBookFromShelf(book);
+                    bs.removeBookFromShelf(book);
                 }
             }
         }
@@ -455,8 +423,7 @@ public class MyBookRoom {
     // EFFECTS: changes the name of a bookshelf
     private void editBookshelfName(Bookshelf bookshelf) {
         System.out.print("Enter new name for bookshelf: ");
-        String response = input.next();
-        response += input.nextLine();
+        String response = input.next() + input.nextLine();
         if (bookRoom.checkBookshelfDoesNotAlreadyExist(response)) {
             bookshelf.setBookshelfLabel(response);
             System.out.println("Bookshelf name has been changed to " + response);
@@ -471,8 +438,7 @@ public class MyBookRoom {
     private void editBooksOnShelf(Bookshelf bookshelf) {
         viewAllBooksOnShelf(bookshelf);
         System.out.print("Would you like to remove or add books to this shelf? Enter remove or add: ");
-        String response = input.next();
-        response += input.nextLine();
+        String response = input.next() + input.nextLine();
         if (response.equals("remove")) {
             removeBookFromGivenShelf(bookshelf);
         } else if (response.equals("add")) {
@@ -485,21 +451,54 @@ public class MyBookRoom {
     private void addBookToGivenShelf(Bookshelf bookshelf) {
         viewAllBooks();
         System.out.print("Enter name of the book you would like to add to " + bookshelf.getBookshelfLabel() + ": ");
-        String title = input.next();
-        title += input.nextLine();
-        title = title.toLowerCase();
-        int foundAtSpace = -1;
-        int tracker = 0;
-        for (Book book : allBooks.getBooks()) {
-            tracker++;
-            if (book.getTitle().toLowerCase().equals(title)) {
-                foundAtSpace = tracker;
-                bookshelf.addBookToShelf(book);
-                System.out.println(book.getTitle() + " has been added to " + bookshelf.getBookshelfLabel());
+        String title = input.next().toLowerCase() + input.nextLine().toLowerCase();
+        int checkValid = -1;
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            if (bs.getBookshelfLabel().equals("All Books")) {
+                for (Book b : bs.getBooksOnShelf()) {
+                    if (b.getTitle().toLowerCase().equals(title) && !bookshelf.getBooksOnShelf().contains(b)) {
+                        checkValid = 0;
+                        bookshelf.addBookToShelf(b);
+                        System.out.println(b.getTitle() + " has been added to " + bookshelf.getBookshelfLabel());
+                        break;
+                    } else if (b.getTitle().toLowerCase().equals(title) && bookshelf.getBooksOnShelf().contains(b)) {
+                        checkValid = 0;
+                        System.out.println("Book is already on shelf " + bookshelf.getBookshelfLabel());
+                        break;
+                    }
+                }
+            }
+        }
+        if (checkValid < 0) {
+            System.out.println("Invalid name.");
+        }
+    }
+
+    // solution adapted from: https://stackoverflow.com/questions/3779514/java-for-loop-and-if-algorithm
+    // REQUIRES: input that is existing bookshelf
+    // MODIFIES: this
+    // EFFECTS: adds book to a shelf the user selects
+    private void addBookToShelf(Book book) {
+        System.out.println("You have the following bookshelves in your Book Room:");
+        for (Bookshelf bookshelf : bookRoom.getShelves()) {
+            System.out.println(bookshelf.getBookshelfLabel());
+        }
+        System.out.print("Enter the name of the bookshelf you would like to add " + book.getTitle() + " to: ");
+        String addShelf = input.next().toLowerCase() + input.nextLine().toLowerCase();
+        int checkValid = -1;
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            if (bs.getBookshelfLabel().toLowerCase().equals(addShelf) && !bs.getBooksOnShelf().contains(book)) {
+                checkValid = 0;
+                bs.addBookToShelf(book);
+                System.out.println(book.getTitle() + " has been added to " + bs.getBookshelfLabel());
+                break;
+            } else if (bs.getBookshelfLabel().toLowerCase().equals(addShelf) && bs.getBooksOnShelf().contains(book)) {
+                checkValid = 0;
+                System.out.println("Book is already on shelf " + bs.getBookshelfLabel());
                 break;
             }
         }
-        if (foundAtSpace < 0) {
+        if (checkValid < 0) {
             System.out.println("Invalid name.");
         }
     }
@@ -507,18 +506,22 @@ public class MyBookRoom {
     // MODIFIES: bookshelf
     // EFFECTS: checks if user input is valid book and removes book from given bookshelf
     private void removeBookFromGivenShelf(Bookshelf bookshelf) {
-        System.out.print("Enter name of the book you would like to remove from " + bookshelf.getBookshelfLabel());
-        String title = input.next();
-        title += input.nextLine();
-        title = title.toLowerCase();
+        System.out.print("Enter name of the book you would like to remove from "
+                + bookshelf.getBookshelfLabel() + ": ");
+        String title = input.next().toLowerCase() + input.nextLine().toLowerCase();
         int foundAtSpace = -1;
         int tracker = 0;
-        for (Book book : bookshelf.getBooks()) {
+        for (Book b : bookshelf.getBooksOnShelf()) {
             tracker++;
-            if (book.getTitle().toLowerCase().equals(title)) {
+            if (b.getTitle().toLowerCase().equals(title) && !bookshelf.getBookshelfLabel().equals("All Books")) {
                 foundAtSpace = tracker;
-                bookshelf.removeBookFromShelf(book);
-                System.out.println(book.getTitle() + " has been removed from " + bookshelf.getBookshelfLabel());
+                bookshelf.removeBookFromShelf(b);
+                System.out.println(b.getTitle() + " has been removed from " + bookshelf.getBookshelfLabel());
+                break;
+            } else if (b.getTitle().toLowerCase().equals(title)
+                    && bookshelf.getBookshelfLabel().equals("All Books")) {
+                foundAtSpace = 0;
+                confirmDeleteBookFromAllBooks(b);
                 break;
             }
         }
@@ -530,7 +533,7 @@ public class MyBookRoom {
     // EFFECTS: displays books on given shelf for user
     private void viewAllBooksOnShelf(Bookshelf bookshelf) {
         System.out.println("Here are the books on shelf " + bookshelf.getBookshelfLabel() + ":");
-        for (Book book : bookshelf.getBooks()) {
+        for (Book book : bookshelf.getBooksOnShelf()) {
             System.out.println("\t" + book.getTitle());
         }
     }
@@ -538,12 +541,47 @@ public class MyBookRoom {
     // EFFECTS: displays name of book room, shelves in room, and books on shelves for user
     private void viewBookRoom() {
         System.out.println(bookRoom.getName());
-        for (Bookshelf bookshelf : bookRoom.getShelves()) {
-            System.out.println("\tBookshelf: " + bookshelf.getBookshelfLabel());
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            System.out.println("\tBookshelf: " + bs.getBookshelfLabel());
             System.out.println("\tContains: ");
-            for (Book book : bookshelf.getBooks()) {
+            for (Book book : bs.getBooksOnShelf()) {
                 System.out.println("\t\t" + book.getTitle());
             }
+        }
+    }
+
+    // EFFECTS: identifies shelf with label "All Books" and returns it
+    private Bookshelf getAllBooksShelf() {
+        for (Bookshelf bs : bookRoom.getShelves()) {
+            if (bs.getBookshelfLabel().equals("All Books")) {
+                allBooks = bs;
+            }
+        }
+        return allBooks;
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoomApp.saveWorkRoom)
+    // EFFECTS: saves the bookroom to file
+    private void saveBookRoom() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(bookRoom);
+            jsonWriter.close();
+            System.out.println("Saved " + bookRoom.getName() + " to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoomApp.loadWorkRoom)
+    // MODIFIES: this
+    // EFFECTS: loads bookroom from file
+    private void loadBookRoom() {
+        try {
+            bookRoom = jsonReader.read();
+            System.out.println("Loaded " + bookRoom.getName() + " from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 

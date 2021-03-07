@@ -1,0 +1,17 @@
+{
+    "name": "My Book Room",
+    "bookshelves": [
+        {
+            "books": [],
+            "label": "All Books"
+        },
+        {
+            "books": [],
+            "label": "To Read"
+        },
+        {
+            "books": [],
+            "label": "Completed"
+        }
+    ]
+}

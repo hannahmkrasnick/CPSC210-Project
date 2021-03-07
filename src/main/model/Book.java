@@ -1,7 +1,10 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Represents a book having a title, author, genre, rating, and review
-public class Book {
+public class Book implements Writable {
     private String title;
     private String author;
     private int rating;
@@ -16,8 +19,18 @@ public class Book {
         this.title = title;
         this.author = "";
         genre = Genre.UNCLASSIFIED;
-        rating = 0;
+        rating = -1;
         review = "";
+    }
+
+    //REQUIRES: none of the parameters are null
+    //EFFECTS: creates a book with given title, author, genre, rating, and review
+    public Book(String title, String author, Genre genre, int rating, String review) {
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.rating = rating;
+        this.review = review;
     }
 
     // getters
@@ -60,6 +73,19 @@ public class Book {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (Thingy.toJson)
+    // EFFECTS: returns JSON object representation of book
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("title", title);
+        json.put("author", author);
+        json.put("rating", rating);
+        json.put("review", review);
+        json.put("genre", genre);
+        return json;
     }
 }
 
