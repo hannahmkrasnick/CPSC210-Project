@@ -57,7 +57,7 @@ class JsonReaderTest extends JsonTest {
             assertEquals("My Book Room", br.getName());
             assertEquals(3, br.getShelves().size());
             assertEquals(0, br.getBooks().size());
-            assertNull(reader.getBookFromTitle("ABC"));
+            assertEquals(null, reader.getBookFromTitle("ABC"));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
@@ -93,7 +93,7 @@ class JsonReaderTest extends JsonTest {
             checkBook(shelves.get(3).getBooksOnShelf().get(0), testBookGOT.getTitle(), testBookGOT.getAuthor(),
                     testBookGOT.getGenre(), testBookGOT.getRating(), testBookGOT.getReview());
 
-            assertNull(reader.getBookFromTitle("ABC"));
+            assertEquals(null, reader.getBookFromTitle("ABC"));
 
 
         } catch (IOException e) {
