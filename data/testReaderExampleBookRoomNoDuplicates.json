@@ -1,0 +1,32 @@
+{
+    "name": "My Book Room",
+    "bookshelves": [
+        {
+            "books": [
+                {
+                    "author": "George R R Martin",
+                    "review": "Very good!",
+                    "rating": 9,
+                    "genre": "FANTASY",
+                    "title": "Game of Thrones"
+                },
+                {
+                    "author": "JK Rowling",
+                    "review": "Not bad!",
+                    "rating": 8,
+                    "genre": "YOUNGADULT",
+                    "title": "Harry Potter"
+                }
+            ],
+            "label": "All Books"
+        },
+        {
+            "books": [],
+            "label": "To Read"
+        },
+        {
+            "books": [],
+            "label": "Completed"
+        }
+    ]
+}

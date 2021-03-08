@@ -30,10 +30,6 @@ class JsonReaderTest extends JsonTest {
         testBookGOT = new Book("Game of Thrones", "George R R Martin", Genre.FANTASY,
                 9, "Very good!");
         testBookHP = new Book("Harry Potter", "JK Rowling", Genre.YOUNGADULT, 8, "Not bad!");
-        testAllBooks.addBookToShelf(testBookGOT);
-        testAllBooks.addBookToShelf(testBookHP);
-        testToRead.addBookToShelf(testBookHP);
-        testFavourites.addBookToShelf(testBookGOT);
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderNonExistentFile)
@@ -65,10 +61,47 @@ class JsonReaderTest extends JsonTest {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderGeneralWorkRoom)
     @Test
-    void testReaderExampleBookRoom() {
+    void testReaderExampleBookRoomNoDuplicateObjects() {
+        JsonReader reader = new JsonReader("./data/testReaderExampleBookRoomNoDuplicates.json");
+        try {
+            BookRoom br = reader.read();
+            testAllBooks.addBookToShelf(testBookGOT);
+            testAllBooks.addBookToShelf(testBookHP);
+
+            assertEquals("My Book Room", br.getName());
+            List<Bookshelf> shelves = br.getShelves();
+            assertEquals(3, shelves.size());
+
+            checkBookshelf(shelves.get(0), testAllBooks.getBookshelfLabel());
+            assertEquals(2, testAllBooks.getBooksOnShelf().size());
+            checkBook(shelves.get(0).getBooksOnShelf().get(0), testBookGOT.getTitle(), testBookGOT.getAuthor(),
+                    testBookGOT.getGenre(), testBookGOT.getRating(), testBookGOT.getReview());
+            checkBook(shelves.get(0).getBooksOnShelf().get(1), testBookHP.getTitle(), testBookHP.getAuthor(),
+                    testBookHP.getGenre(), testBookHP.getRating(), testBookHP.getReview());
+
+            checkBookshelf(shelves.get(1), testToRead.getBookshelfLabel());
+            assertEquals(0, testToRead.getBooksOnShelf().size());
+
+            checkBookshelf(shelves.get(2), testCompleted.getBookshelfLabel());
+            assertEquals(0, testCompleted.getBooksOnShelf().size());
+
+
+        } catch (IOException e) {
+            fail("Couldn't read from file");
+        }
+    }
+
+    // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderGeneralWorkRoom)
+    @Test
+    void testReaderExampleBookRoomDuplicateObjects() {
         JsonReader reader = new JsonReader("./data/testReaderExampleBookRoom.json");
         try {
             BookRoom br = reader.read();
+            testAllBooks.addBookToShelf(testBookGOT);
+            testAllBooks.addBookToShelf(testBookHP);
+            testToRead.addBookToShelf(testBookHP);
+            testFavourites.addBookToShelf(testBookGOT);
+
             assertEquals("My Book Room", br.getName());
             List<Bookshelf> shelves = br.getShelves();
             assertEquals(4, shelves.size());
