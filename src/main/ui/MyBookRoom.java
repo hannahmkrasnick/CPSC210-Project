@@ -72,7 +72,7 @@ public class MyBookRoom {
         System.out.println("\tb: View my bookshelves");
         System.out.println("\tr: View my Book Room");
         System.out.println("\ts: Save my Book Room to file");
-        System.out.println("\tl: load my Book Room from file");
+        System.out.println("\tl: Load my Book Room from file");
         System.out.println("\te: Exit");
     }
 
