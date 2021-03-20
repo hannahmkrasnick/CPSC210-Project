@@ -13,27 +13,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GraphicBookRoom extends JFrame implements ActionListener {
-    private BookRoomView brv;
     private BookshelfView bookshelfView;
-    private BooksView booksView;
-    private EditPanel editPanel;
     private JLabel label;
     private Font myFont;
 
+    private int panelWidth = 400;
+    private int panelHeight = 300;
     private static final String JSON_STORE = "./data/bookroom.json";
     private BookRoom bookRoom;
     private Bookshelf allBooks;
     private Bookshelf completed;
     private Bookshelf toRead;
+    private Bookshelf favourites;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
     private GridBagConstraints constraints;
     private JPanel contentView;
     private JPanel bookDisplay;
+    private JPanel editView;
 
     private Book testBook1;
     private Book testBook2;
 
+    //TODO
     public GraphicBookRoom() {
         super("My Book Room");
         init();
@@ -55,69 +57,114 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
             add(bookshelfView, constraints);
         }
 
-        booksView = new BooksView(this, allBooks);
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridy += 1;
-        contentView = booksView;
-        add(booksView,constraints);
+        setBooksDisplay(new BooksView(this, allBooks));
 
-        editPanel = new EditPanel(this);
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        constraints.gridheight = 4;
-        add(editPanel, constraints);
+        setBookDisplay(new BookView(this));
 
-        brv = new BookRoomView(this);
-        bookDisplay = brv;
-        constraints.gridy = 4;
-        constraints.gridheight = 1;
-        add(brv, constraints);
+        ChangePanel changePanel = new ChangePanel(this);
+        setEditView(changePanel);
+        changeToChangePanel();
 
         pack();
         centreOnScreen();
         setVisible(true);
     }
 
-    private void setContentView(JPanel jpanel) {
-        remove(contentView);
+    //TODO
+    private void setEditView(JPanel jpanel) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridx = 1;
+        constraints.gridy = 5;
+        editView = jpanel;
+        add(jpanel, constraints);
+        revalidate();
+    }
+
+    //TODO
+    public void changeToEditView() {
+        remove(editView);
+        EditBookView newPanel = new EditBookView(this);
+        newPanel.enterTitleToEditView();
+        setEditView(newPanel);
+    }
+
+    //TODO
+    public void changeToEditBookFieldsView(Book book) {
+        remove(editView);
+        EditBookView newPanel = new EditBookView(this);
+        newPanel.editBookFields(book);
+        setEditView(newPanel);
+    }
+
+    public void changeToAddBookView() {
+        remove(editView);
+        AddBookView newPanel = new AddBookView(this);
+        setEditView(newPanel);
+    }
+
+    public void changeToDeleteBookView() {
+        remove(editView);
+        DeleteBookView newPanel = new DeleteBookView(this);
+        setEditView(newPanel);
+    }
+
+    public void changeToChangePanel() {
+        remove(editView);
+        ChangePanel changePanel = new ChangePanel(this);
+        changePanel.makeAddButton();
+        changePanel.makeEditBookButton();
+        changePanel.makeDeleteButton();
+        setEditView(changePanel);
+    }
+
+    //TODO
+    private void setBooksDisplay(JPanel jpanel) {
+        constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridheight = 5;
         contentView = jpanel;
         add(jpanel, constraints);
         revalidate();
     }
 
-    public void changeContentView(Bookshelf bookshelf) {
+    //TODO
+    public void changeBooksDisplay(Bookshelf bookshelf) {
+        remove(contentView);
         BooksView books = new BooksView(this, bookshelf);
-        setContentView(books);
+        setBooksDisplay(books);
     }
 
+    //TODO
     private void setBookDisplay(JPanel jpanel) {
-        remove(bookDisplay);
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 1;
-        constraints.gridy = 4;
+        constraints.gridx = 0;
+        constraints.gridy = 5;
         constraints.gridheight = 1;
         bookDisplay = jpanel;
         add(jpanel, constraints);
         revalidate();
     }
 
+    //TODO
     public void changeBookDisplay(Book b) {
-        BookRoomView bookView = new BookRoomView(this);
+        remove(bookDisplay);
+        BookView bookView = new BookView(this);
         bookView.displayBook(b);
         setBookDisplay(bookView);
     }
 
+    //TODO
     // MODIFIES: this
     // EFFECTS: initializes BookRoom with number of bookshelves
     private void init() {
         allBooks = new Bookshelf("All Books");
         toRead = new Bookshelf("To Read");
         completed = new Bookshelf("Completed");
+        favourites = new Bookshelf("Favourites");
 
         testBook1 = new Book("Harry Potter", "JK Rowling", Genre.CLASSIC, 5, "Very good");
         testBook2 = new Book("Game of Thrones");
@@ -130,34 +177,66 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         bookRoom.addShelfToRoom(allBooks);
         bookRoom.addShelfToRoom(toRead);
         bookRoom.addShelfToRoom(completed);
+        bookRoom.addShelfToRoom(favourites);
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
 
         myFont = new Font("Sans-Serif", Font.BOLD, 18);
     }
 
+    //TODO
     @Override
     public void actionPerformed(ActionEvent e) {
     }
 
+    //TODO
     // ADD ADAPTATION: SPACE INVADERS
     // Centres frame on desktop
     // modifies: this
     // effects:  location of frame is set so frame is centred on desktop
     private void centreOnScreen() {
-        Dimension scrn = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((scrn.width - getWidth()) / 2, (scrn.height - getHeight()) / 2);
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
 
+    //TODO
     private JLabel drawBookRoomLabel() {
         label = new JLabel("Your Bookshelves:", SwingConstants.CENTER);
-        label.setPreferredSize(new Dimension(250,50));
+        label.setPreferredSize(new Dimension(panelWidth,panelHeight / 5));
         label.setForeground(Color.WHITE);
         label.setOpaque(true);
         label.setBackground(Color.DARK_GRAY);
-        //Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,3);
-        //label.setBorder(lineBorder);
         label.setFont(myFont);
         return label;
     }
+
+    public int getPanelWidth() {
+        return panelWidth;
+    }
+
+    public int getPanelHeight() {
+        return panelHeight;
+    }
+
+    public Bookshelf getAllBooks() {
+        return allBooks;
+    }
+
+    public Bookshelf getCompleted() {
+        return completed;
+    }
+
+    public Bookshelf getToRead() {
+        return toRead;
+    }
+
+    public Bookshelf getFavourites() {
+        return favourites;
+    }
+
+    public BookRoom getBookRoom() {
+        return bookRoom;
+    }
+
+
 }

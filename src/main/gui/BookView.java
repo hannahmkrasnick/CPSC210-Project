@@ -1,17 +1,15 @@
 package gui;
 
 import model.Book;
-import model.BookRoom;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
-public class BookRoomView extends JPanel {
-    private BookRoom bookRoom;
+public class BookView extends JPanel {
     private Book book;
-    private static int width = 300;
-    private static int height = 250;
+    private static int width;
+    private static int height;
     private Font myFont;
     private GraphicBookRoom gui;
     private GridBagConstraints constraints;
@@ -21,8 +19,11 @@ public class BookRoomView extends JPanel {
     private JLabel bookRating;
     private JLabel bookReview;
 
-    public BookRoomView(GraphicBookRoom gui) {
+    //TODO
+    public BookView(GraphicBookRoom gui) {
         this.gui = gui;
+        width = gui.getPanelWidth();
+        height = gui.getPanelHeight();
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.getHSBColor(63, 41, 82));
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
@@ -30,6 +31,7 @@ public class BookRoomView extends JPanel {
         setLayout(new GridBagLayout());
     }
 
+    //TODO
     public void displayBook(Book b) {
         this.book = b;
         constraints = new GridBagConstraints();
@@ -47,11 +49,11 @@ public class BookRoomView extends JPanel {
         bookAuthor.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(bookAuthor);
 
-        bookGenre = new JLabel("Genre: " + String.valueOf(b.getGenre()));
+        bookGenre = new JLabel("Genre: " + String.valueOf(b.getGenre()).toLowerCase());
         bookGenre.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(bookGenre);
 
-        bookRating = new JLabel("Rating: " + String.valueOf(b.getRating()) + "/10");
+        bookRating = new JLabel("Rating: " + b.getRating() + "/10");
         bookRating.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(bookRating);
 

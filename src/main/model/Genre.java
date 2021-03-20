@@ -29,4 +29,13 @@ public enum Genre {
         }
         return false;
     }
+
+    //TODO
+    public static Genre getGenreFromString(String string) {
+        if (string.equals("")) {
+            return Genre.UNCLASSIFIED;
+        } else {
+            return Genre.valueOf(string);
+        }
+    }
 }

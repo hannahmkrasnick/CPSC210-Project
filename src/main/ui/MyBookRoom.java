@@ -315,7 +315,7 @@ public class MyBookRoom {
         System.out.print("Enter rating value between 1 and 10: ");
         String stringRating = input.next();
         int rating = Integer.parseInt(stringRating);
-        if (rating >= 1 && rating <= 10) {
+        if (book.checkRatingIsValid(rating)) {
             book.setRating(rating);
             System.out.println("Rating of " + book.getTitle() + " has been set to " + rating);
             editBookInfo(book);
@@ -409,13 +409,7 @@ public class MyBookRoom {
     // MODIFIES: book & this
     // EFFECTS: deletes the book from the room by removing it from all bookshelves it's on
     private void deleteBookFromRoom(Book book) {
-        for (Bookshelf bs: bookRoom.getShelves()) {
-            for (Book b : bs.getBooksOnShelf()) {
-                if (b.getTitle().equals(book.getTitle())) {
-                    bs.removeBookFromShelf(book);
-                }
-            }
-        }
+        bookRoom.deleteBookFromBookRoom(book);
         System.out.println(book.getTitle() + " has been deleted from your Book Room.");
     }
 

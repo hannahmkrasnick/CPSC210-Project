@@ -25,6 +25,16 @@ public class Bookshelf implements Writable {
         this.booksOnShelf.add(book);
     }
 
+    //TODO
+    public boolean checkBookIsNotAlreadyOnShelf(Book book) {
+        for (Book b : booksOnShelf) {
+            if (b.getTitle().equalsIgnoreCase(book.getTitle())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //REQUIRES: book must be on shelf
     //MODIFIES: this
     //EFFECTS: removes book from shelf's list of books

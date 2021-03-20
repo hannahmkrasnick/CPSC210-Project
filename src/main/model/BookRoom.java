@@ -76,6 +76,18 @@ public class BookRoom implements Writable {
         return books;
     }
 
+    //TODO
+    public void deleteBookFromBookRoom(Book book) {
+        for (Bookshelf bs: shelves) {
+            for (Book b : bs.getBooksOnShelf()) {
+                if (b.getTitle().equalsIgnoreCase(book.getTitle())) {
+                    bs.removeBookFromShelf(b);
+                    break;
+                }
+            }
+        }
+    }
+
     // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoom.toJson)
     // EFFECTS: returns JSON object representation of bookroom
     @Override

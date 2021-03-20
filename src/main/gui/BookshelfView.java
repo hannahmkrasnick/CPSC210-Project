@@ -11,16 +11,18 @@ import java.awt.event.ActionListener;
 
 public class BookshelfView extends JPanel implements ActionListener {
     private Bookshelf bookshelf;
-    private static int width = 250;
-    private static int height = 50;
-    private BooksView booksView;
+    private static int width;
+    private static int height;
     private JButton viewButton;
     private GraphicBookRoom gui;
 
+    //TODO
     public BookshelfView(Bookshelf bs, GraphicBookRoom gui) {
         this.gui = gui;
         this.bookshelf = bs;
-        setPreferredSize(new Dimension(width, height));
+        this.width = gui.getPanelWidth();
+        this.height = gui.getPanelHeight();
+        setPreferredSize(new Dimension(width, height / 5));
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
         setBorder(lineBorder);
         setBackground(Color.PINK);
@@ -32,18 +34,16 @@ public class BookshelfView extends JPanel implements ActionListener {
         add(viewButton);
     }
 
-    public JButton getViewButton() {
-        return viewButton;
-    }
-
+    //TODO
     public Bookshelf getBookshelf() {
         return bookshelf;
     }
 
+    //TODO
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("view")) {
-            gui.changeContentView(bookshelf);
+            gui.changeBooksDisplay(bookshelf);
         }
     }
 }

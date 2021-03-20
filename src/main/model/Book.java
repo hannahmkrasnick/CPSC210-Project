@@ -3,6 +3,8 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.util.Objects;
+
 // Represents a book having a title, author, genre, rating, and review
 public class Book implements Writable {
     private String title;
@@ -14,7 +16,7 @@ public class Book implements Writable {
 
     //REQUIRES: book title has non-zero length
     //EFFECTS: creates a book with given title, empty string for title and review, genre set to unclassified, and rating
-    //         initialized at 0
+    //         initialized at -1
     public Book(String title) {
         this.title = title;
         this.author = "";
@@ -73,6 +75,13 @@ public class Book implements Writable {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public boolean checkRatingIsValid(int rating) {
+        if (rating >= 1 && rating <= 10) {
+            return true;
+        }
+        return false;
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (Thingy.toJson)
