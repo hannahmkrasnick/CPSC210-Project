@@ -3,8 +3,6 @@ package ui.gui;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;

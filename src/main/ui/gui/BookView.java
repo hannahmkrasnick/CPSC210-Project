@@ -1,6 +1,7 @@
 package ui.gui;
 
 import model.Book;
+import model.Genre;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,13 +9,14 @@ import java.awt.*;
 
 // Represents panel for displaying info about a book
 public class BookView extends JPanel {
+    private Color color = new Color(165, 203, 175);
 
     //EFFECTS: constructs panel for displaying book
     public BookView(BookRoomApplication gui) {
         int width = gui.getPanelWidth();
         int height = gui.getPanelHeight();
         setPreferredSize(new Dimension(width, height));
-        setBackground(Color.getHSBColor(63, 41, 82));
+        setBackground(color);
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
         setBorder(lineBorder);
         setLayout(new GridBagLayout());
@@ -35,7 +37,7 @@ public class BookView extends JPanel {
         bookAuthor.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(bookAuthor);
 
-        JLabel bookGenre = new JLabel("Genre: " + String.valueOf(b.getGenre()).toLowerCase());
+        JLabel bookGenre = new JLabel("Genre: " + Genre.convertGenreToReadableString(b.getGenre()));
         bookGenre.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(bookGenre);
 

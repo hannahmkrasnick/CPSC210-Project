@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 public class ChangePanel extends JPanel implements ActionListener {
     private BookRoomApplication gui;
     protected GridBagConstraints constraints;
+    private Color color = new Color(208, 217, 168);
 
     //EFFECTS: constructs panel where changes to book room will be made
     public ChangePanel(BookRoomApplication gui) {
@@ -21,7 +22,7 @@ public class ChangePanel extends JPanel implements ActionListener {
         constraints.gridx = 0;
         constraints.gridy = 0;
         setPreferredSize(new Dimension(width, height));
-        setBackground(Color.GRAY);
+        setBackground(color);
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
         setBorder(lineBorder);
     }

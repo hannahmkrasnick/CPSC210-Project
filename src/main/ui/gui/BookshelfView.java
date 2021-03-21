@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 public class BookshelfView extends JPanel implements ActionListener {
     private Bookshelf bookshelf;
     private BookRoomApplication gui;
+    private Color color = new Color(253, 211, 187);
 
     //EFFECTS: constructs a JPanel with Bookshelf label and button to view book
     public BookshelfView(Bookshelf bs, BookRoomApplication gui) {
@@ -22,7 +23,7 @@ public class BookshelfView extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(width, height / 5));
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
         setBorder(lineBorder);
-        setBackground(Color.PINK);
+        setBackground(color);
         JLabel label = new JLabel(bs.getBookshelfLabel());
         JButton viewButton = new JButton("View");
         viewButton.setActionCommand("view");

@@ -8,12 +8,14 @@ import java.awt.*;
 
 // JPanel with buttons for all books on given shelf
 public class BooksView extends JPanel {
+    private Color color = new Color(247, 233, 197);
 
     //EFFECTS: constructs JPanel with buttons for all books on given shelf
     public BooksView(BookRoomApplication gui, Bookshelf bs) {
         int width = gui.getPanelWidth();
         int height = gui.getPanelHeight();
         Font myFont = new Font("Sans-Serif", Font.BOLD, 16);
+        setBackground(color);
         setPreferredSize(new Dimension(width, height));
         JLabel bookshelfLabel = new JLabel(bs.getBookshelfLabel(), SwingConstants.CENTER);
         bookshelfLabel.setFont(myFont);

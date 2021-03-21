@@ -139,15 +139,7 @@ public class AddBookView extends ChangePanel implements ActionListener {
         String genreString = genreField.getText();
         Genre genre = Genre.getGenreFromString(genreString);
         String ratingString = ratingField.getText();
-        try {
-            rating = Integer.parseInt(ratingString);
-            if (!Book.checkRatingIsValid(rating)) {
-                rating = -1;
-            }
-
-        } catch (NumberFormatException nfe) {
-            rating = -1;
-        }
+        int rating = makeRatingInt(ratingString);
         String review = reviewField.getText();
 
         if (e.getActionCommand().equals("add")) {
@@ -163,6 +155,21 @@ public class AddBookView extends ChangePanel implements ActionListener {
             }
         }
         gui.changeToChangePanel();
+    }
+
+    //EFFECTS: converts string to valid rating int for book, return -1 if ratingString not between 1 and 10
+    private int makeRatingInt(String ratingString) {
+        int rating;
+        try {
+            rating = Integer.parseInt(ratingString);
+            if (!Book.checkRatingIsValid(rating)) {
+                rating = -1;
+            }
+
+        } catch (NumberFormatException nfe) {
+            rating = -1;
+        }
+        return rating;
     }
 
     //MODIFIES: gui

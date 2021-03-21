@@ -3,10 +3,12 @@ package ui.gui;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
+import model.Genre;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
@@ -44,11 +46,11 @@ public class BookRoomApplication extends JFrame {
         setUndecorated(false);
         setVisible(false);
         setLayout(new GridBagLayout());
+        setBackground(Color.BLACK);
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 0;
-        setBackground(Color.BLACK);
 
         add(drawBookRoomLabel(), constraints);
 
@@ -61,9 +63,37 @@ public class BookRoomApplication extends JFrame {
         setEditView(new ChangePanel(this));
         changeToChangePanel();
 
+        addGenrePanel();
+
         pack();
         centreOnScreen();
         setVisible(true);
+    }
+
+    private void addGenrePanel() {
+        myFont = new Font("Sans-Serif", Font.BOLD, 18);
+        constraints = new GridBagConstraints();
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        constraints.gridheight = 6;
+        GridBagConstraints genrePanelConstraints = new GridBagConstraints();
+        genrePanelConstraints.gridx = 0;
+        genrePanelConstraints.gridy = 0;
+        JPanel genrePanel = new JPanel();
+        genrePanel.setLayout(new GridBagLayout());
+        genrePanel.setPreferredSize(new Dimension(150, panelHeight * 2));
+        genrePanel.setBackground(Color.DARK_GRAY);
+        JLabel genreTitle = new JLabel("Genres:");
+        genreTitle.setFont(myFont);
+        genreTitle.setForeground(Color.WHITE);
+        genrePanel.add(genreTitle, genrePanelConstraints);
+        for (Genre genre : Genre.values()) {
+            genrePanelConstraints.gridy += 1;
+            JLabel newLabel = new JLabel(Genre.convertGenreToReadableString(genre));
+            newLabel.setForeground(Color.WHITE);
+            genrePanel.add(newLabel, genrePanelConstraints);
+        }
+        add(genrePanel, constraints);
     }
 
     //MODIFIES: this
@@ -224,6 +254,8 @@ public class BookRoomApplication extends JFrame {
         label.setForeground(Color.WHITE);
         label.setOpaque(true);
         label.setBackground(Color.DARK_GRAY);
+        Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
+        label.setBorder(lineBorder);
         label.setFont(myFont);
         return label;
     }

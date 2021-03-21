@@ -28,7 +28,7 @@ class JsonWriterTest extends JsonTest {
         testCompleted = new Bookshelf("Completed");
         testBookGOT = new Book("Game of Thrones", "George R R Martin", Genre.FANTASY,
                 9, "Very good!");
-        testBookHP = new Book("Harry Potter", "JK Rowling", Genre.YOUNGADULT, 8, "Not bad!");
+        testBookHP = new Book("Harry Potter", "JK Rowling", Genre.YOUNG_ADULT, 8, "Not bad!");
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonWriterTest.testWriterInvalidFile)
