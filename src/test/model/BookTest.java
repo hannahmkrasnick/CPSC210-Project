@@ -62,4 +62,25 @@ class BookTest {
         testBook1.setGenre(Genre.COMIC);
         assertEquals(Genre.COMIC, testBook1.getGenre());
     }
+
+    @Test
+    void testCheckRatingIsValid() {
+        assertTrue(Book.checkRatingIsValid(1));
+        assertTrue(Book.checkRatingIsValid(10));
+
+        assertFalse(Book.checkRatingIsValid(0));
+        assertFalse(Book.checkRatingIsValid(11));
+    }
+
+    @Test
+    void testSetAllBookFields() {
+        String title = "DEF";
+        String author = "Author name";
+        Genre genre = Genre.COMIC;
+        int rating = 8;
+        String review = "Pretty good";
+        Book book = new Book("ABC");
+
+        book.setAllBookFields(title, author, genre, rating, review);
+    }
 }

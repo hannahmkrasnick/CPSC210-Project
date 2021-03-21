@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 
@@ -6,10 +6,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+// Represents panel for displaying info about a book
 public class BookView extends JPanel {
 
-    //TODO
-    public BookView(GraphicBookRoom gui) {
+    //EFFECTS: constructs panel for displaying book
+    public BookView(BookRoomApplication gui) {
         int width = gui.getPanelWidth();
         int height = gui.getPanelHeight();
         setPreferredSize(new Dimension(width, height));
@@ -19,7 +20,8 @@ public class BookView extends JPanel {
         setLayout(new GridBagLayout());
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds information about a book for display
     public void displayBook(Book b) {
         Font myFont = new Font("Sans-Serif", Font.BOLD, 18);
 

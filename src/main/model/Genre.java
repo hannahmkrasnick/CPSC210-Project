@@ -31,7 +31,7 @@ public enum Genre {
         return false;
     }
 
-    //TODO
+    //EFFECTS: returns genre that matches the string, or UNCLASSIFIED if invalid string
     public static Genre getGenreFromString(String string) {
         if (!checkGenreExists(string)) {
             return Genre.UNCLASSIFIED;

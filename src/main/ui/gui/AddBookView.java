@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 import model.Genre;
@@ -8,20 +8,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Represents a panel that allows user to add a book to app
 public class AddBookView extends ChangePanel implements ActionListener {
     private JTextField titleField;
     private JTextField authorField;
     private JTextField genreField;
     private JTextField ratingField;
     private JTextField reviewField;
-    private GraphicBookRoom gui;
+    private BookRoomApplication gui;
     private JCheckBox addToToRead;
     private JCheckBox addToCompleted;
     private JCheckBox addToFavourites;
+    private int rating;
     private static final int textFieldColumns = 15;
 
-    //TODO
-    public AddBookView(GraphicBookRoom gui) {
+    //EFFECTS: constructs a ChangePanel with fields to add a book to book room and checkboxes for which shelves to add
+    //         book to
+    public AddBookView(BookRoomApplication gui) {
         super(gui);
         this.gui = gui;
         constraints = new GridBagConstraints();
@@ -46,10 +49,11 @@ public class AddBookView extends ChangePanel implements ActionListener {
         addToFavourites = new JCheckBox("Add to Favourites");
         add(addToFavourites, constraints);
 
-        addSubmitButton(constraints);
+        addAddButton(constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: constructs text fields for inputting info about book and adds fields to this
     private void addTextFields(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridx = 1;
@@ -74,7 +78,8 @@ public class AddBookView extends ChangePanel implements ActionListener {
         add(reviewField, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: constructs labels for book fields and adds labels to this
     private void addLabelsForFields(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridy = 1;
@@ -99,8 +104,9 @@ public class AddBookView extends ChangePanel implements ActionListener {
         add(reviewLabel, constraints);
     }
 
-    //TODO
-    private void addSubmitButton(GridBagConstraints constraints) {
+    //MODIFIES: this
+    //EFFECTS: constructs add button which prompts system to add book to room and adds button to this
+    private void addAddButton(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridx = 1;
         constraints.gridy += 1;
@@ -111,7 +117,8 @@ public class AddBookView extends ChangePanel implements ActionListener {
         add(submitButton, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: constructs instruction label for top of panel and adds it to this
     private void addInstructionLabel(GridBagConstraints constraints) {
         this.constraints = constraints;
         Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
@@ -121,10 +128,11 @@ public class AddBookView extends ChangePanel implements ActionListener {
         add(text, constraints);
     }
 
-    //TODO
+    //MODIFIES: gui
+    //EFFECTS: called when "add" button is pressed, if title doesn't already exists, adds new book with given fields
+    //         to "All Books" shelf and any selected shelves, and changes panel back to main ChangePanel
     @Override
     public void actionPerformed(ActionEvent e) {
-        int rating;
         String title = titleField.getText();
         String author = authorField.getText();
         String genreString = genreField.getText();
@@ -144,15 +152,19 @@ public class AddBookView extends ChangePanel implements ActionListener {
         if (e.getActionCommand().equals("add")) {
             if (gui.getBookRoom().checkBookDoesNotAlreadyExist(title) && !title.equals("")) {
                 Book newBook = new Book(title, author, genre, rating, review);
-                gui.getAllBooks().addBookToShelf(newBook);
                 addToSelectedShelves(newBook);
+                OptionPane confirmBookAdded = new OptionPane(gui);
+                confirmBookAdded.confirmBookAddedPane();
             }
         }
         gui.changeToChangePanel();
     }
 
-    //TODO
+    //MODIFIES: gui
+    //EFFECTS: checks which bookshelf check boxes are selected and adds b to those shelves, or removes it from
+    //         deselected shelves
     private void addToSelectedShelves(Book b) {
+        gui.getAllBooks().addBookToShelf(b);
         if (addToToRead.isSelected()) {
             gui.getToRead().addBookToShelf(b);
         }

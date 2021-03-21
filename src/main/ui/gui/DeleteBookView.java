@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 
@@ -8,13 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+// Represents a panel that allows user to delete a book from app
 public class DeleteBookView extends ChangePanel implements ActionListener {
     private JTextField inputField;
-    private GraphicBookRoom gui;
+    private BookRoomApplication gui;
     private static final String newline = "\n";
     private static final int textFieldColumns = 15;
 
-    public DeleteBookView(GraphicBookRoom gui) {
+    //EFFECTS: constructs a ChangePanel for user to input which book they'd like to delete from app
+    public DeleteBookView(BookRoomApplication gui) {
         super(gui);
         this.gui = gui;
 
@@ -29,6 +31,8 @@ public class DeleteBookView extends ChangePanel implements ActionListener {
         add(inputField, constraints);
     }
 
+    //MODIFIES: gui
+    //EFFECTS: if prompted, deletes book from room and changes panel back to main ChangePanel
     @Override
     public void actionPerformed(ActionEvent e) {
         List<Book> allBooks = gui.getAllBooks().getBooksOnShelf();

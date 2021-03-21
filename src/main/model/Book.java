@@ -3,8 +3,6 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
-import java.util.Objects;
-
 // Represents a book having a title, author, genre, rating, and review
 public class Book implements Writable {
     private String title;
@@ -77,11 +75,9 @@ public class Book implements Writable {
         this.genre = genre;
     }
 
+    //EFFECTS: return true if rating is between 1 and 10, else false
     public static boolean checkRatingIsValid(int rating) {
-        if (rating >= 1 && rating <= 10) {
-            return true;
-        }
-        return false;
+        return rating >= 1 && rating <= 10;
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (Thingy.toJson)
@@ -97,13 +93,14 @@ public class Book implements Writable {
         return json;
     }
 
-    //TODO
-    public void setAllBookFields(String title, String author, int rating, String review, Genre genre) {
+    //MODIFIES: this
+    //EFFECTS: sets all book fields to given parameters
+    public void setAllBookFields(String title, String author, Genre genre, int rating, String review) {
         setTitle(title);
         setAuthor(author);
+        setGenre(genre);
         setRating(rating);
         setReview(review);
-        setGenre(genre);
     }
 }
 

@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 import model.Bookshelf;
@@ -6,11 +6,11 @@ import model.Bookshelf;
 import javax.swing.*;
 import java.awt.*;
 
-
+// JPanel with buttons for all books on given shelf
 public class BooksView extends JPanel {
 
-    //TODO
-    public BooksView(GraphicBookRoom gui, Bookshelf bs) {
+    //EFFECTS: constructs JPanel with buttons for all books on given shelf
+    public BooksView(BookRoomApplication gui, Bookshelf bs) {
         int width = gui.getPanelWidth();
         int height = gui.getPanelHeight();
         Font myFont = new Font("Sans-Serif", Font.BOLD, 16);

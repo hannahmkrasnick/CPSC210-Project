@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -6,12 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Represents a panel for user to edit application
 public class ChangePanel extends JPanel implements ActionListener {
-    private GraphicBookRoom gui;
+    private BookRoomApplication gui;
     protected GridBagConstraints constraints;
 
-    //TODO
-    public ChangePanel(GraphicBookRoom gui) {
+    //EFFECTS: constructs panel where changes to book room will be made
+    public ChangePanel(BookRoomApplication gui) {
         this.gui = gui;
         int width = gui.getPanelWidth();
         int height = gui.getPanelHeight();
@@ -25,7 +26,8 @@ public class ChangePanel extends JPanel implements ActionListener {
         setBorder(lineBorder);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: creates a button for adding a new book and adds it to this
     public void makeAddButton() {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -36,7 +38,8 @@ public class ChangePanel extends JPanel implements ActionListener {
         add(addButton, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: creates a button for editing a book and adds it to this
     public void makeEditBookButton() {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -47,7 +50,8 @@ public class ChangePanel extends JPanel implements ActionListener {
         add(editBookButton, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: creates a button for deleting a book and adds it to this
     public void makeDeleteButton() {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -58,7 +62,8 @@ public class ChangePanel extends JPanel implements ActionListener {
         add(deleteButton, constraints);
     }
 
-    //TODO
+    //MODIFIES: gui
+    //EFFECTS: switches edit panel in gui depending on which button was pressed
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {

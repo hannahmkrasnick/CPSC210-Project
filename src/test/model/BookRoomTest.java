@@ -70,4 +70,29 @@ public class BookRoomTest {
         assertTrue(testBookRoom.checkBookDoesNotAlreadyExist(testBook2.getTitle()));
     }
 
+    @Test
+    void testDeleteBookFromBookRoomBookExists() {
+        testBookRoom.addShelfToRoom(testBookshelf1);
+        testBookRoom.addShelfToRoom(testBookshelf2);
+
+        testBookshelf1.addBookToShelf(testBook1);
+        testBookshelf2.addBookToShelf(testBook1);
+
+        testBookRoom.deleteBookFromBookRoom(testBook1);
+        assertTrue(testBookshelf1.getBooksOnShelf().isEmpty());
+        assertTrue(testBookshelf2.getBooksOnShelf().isEmpty());
+    }
+
+    @Test
+    void testDeleteBookFromBookRoomBookDoesNotExist() {
+        testBookRoom.addShelfToRoom(testBookshelf1);
+        testBookRoom.addShelfToRoom(testBookshelf2);
+
+        testBookshelf1.addBookToShelf(testBook1);
+        testBookshelf2.addBookToShelf(testBook1);
+
+        testBookRoom.deleteBookFromBookRoom(testBook2);
+        assertFalse(testBookshelf1.getBooksOnShelf().isEmpty());
+        assertFalse(testBookshelf2.getBooksOnShelf().isEmpty());
+    }
 }

@@ -32,7 +32,7 @@ public class BookRoom implements Writable {
         this.shelves.remove(bookshelf);
     }
 
-    // EFFECTS: checks if the given label isn't already the label of an existing bookshelf in the room
+    //EFFECTS: checks if the given label isn't already the label of an existing bookshelf in the room
     public boolean checkBookshelfDoesNotAlreadyExist(String label) {
         label = label.toLowerCase();
         for (Bookshelf b : this.getShelves()) {
@@ -43,7 +43,7 @@ public class BookRoom implements Writable {
         return true;
     }
 
-    // EFFECTS: checks if a book with same title is already in room
+    //EFFECTS: checks if a book with same title is already in room
     public boolean checkBookDoesNotAlreadyExist(String title) {
         title = title.toLowerCase();
         for (Bookshelf b : this.getShelves()) {
@@ -76,7 +76,8 @@ public class BookRoom implements Writable {
         return books;
     }
 
-    //TODO
+    //MODIFIES: this, book
+    //EFFECTS: deletes book from room by deleting it from every shelf it's on
     public void deleteBookFromBookRoom(Book book) {
         for (Bookshelf bs: shelves) {
             for (Book b : bs.getBooksOnShelf()) {

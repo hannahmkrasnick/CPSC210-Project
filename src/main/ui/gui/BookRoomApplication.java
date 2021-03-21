@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 import model.BookRoom;
@@ -8,13 +8,12 @@ import persistence.JsonWriter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class GraphicBookRoom extends JFrame implements ActionListener {
+// Book Room application with graphics
+public class BookRoomApplication extends JFrame {
     private static final String JSON_STORE = "./data/bookroom.json";
     private int panelWidth = 400;
     private int panelHeight = 300;
@@ -33,8 +32,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
     private OptionPane optionPane;
     private Font myFont;
 
-    //TODO
-    public GraphicBookRoom() {
+    //EFFECTS: constructs a book room for users to add books to
+    public BookRoomApplication() {
         super("My Book Room");
         init();
         optionPane = new OptionPane(this);
@@ -67,7 +66,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: sets up window listener for this to prompt user when they close the app
     private void setWindowListener() {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -78,7 +78,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         });
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds panels for each bookshelf to this
     private void addBookshelfPanels(GridBagConstraints constraints) {
         this.constraints = constraints;
         for (Bookshelf bs : bookRoom.getShelves()) {
@@ -88,18 +89,20 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         }
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: sets edit view (bottom left) panel to given jpanel
     private void setEditView(JPanel jpanel) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 1;
+        constraints.gridx = 0;
         constraints.gridy = 5;
         editView = jpanel;
         add(jpanel, constraints);
         revalidate();
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes edit view to EditBookView where user can enter title of book to edit
     public void changeToEditView() {
         remove(editView);
         EditBookView newPanel = new EditBookView(this);
@@ -107,7 +110,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         setEditView(newPanel);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes edit view to EditBookView with fields for entering info about a book
     public void changeToEditBookFieldsView(Book book) {
         remove(editView);
         EditBookView newPanel = new EditBookView(this);
@@ -115,21 +119,24 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         setEditView(newPanel);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes edit view to AddBookView
     public void changeToAddBookView() {
         remove(editView);
         AddBookView newPanel = new AddBookView(this);
         setEditView(newPanel);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes edit view to DeleteBookView
     public void changeToDeleteBookView() {
         remove(editView);
         DeleteBookView newPanel = new DeleteBookView(this);
         setEditView(newPanel);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes edit view to default (ChangePanel with buttons)
     public void changeToChangePanel() {
         remove(editView);
         ChangePanel changePanel = new ChangePanel(this);
@@ -139,7 +146,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         setEditView(changePanel);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: sets books display (top right) panel to given jpanel
     private void setBooksDisplay(JPanel jpanel) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -151,18 +159,20 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         revalidate();
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes books display to new BooksView that displays bookshelf
     public void changeBooksDisplay(Bookshelf bookshelf) {
         remove(contentView);
         BooksView books = new BooksView(this, bookshelf);
         setBooksDisplay(books);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: sets book display (bottom right) panel to given jpanel
     private void setBookDisplay(JPanel jpanel) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 5;
         constraints.gridheight = 1;
         bookDisplay = jpanel;
@@ -170,7 +180,8 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         revalidate();
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: changes book display to new BookView that displays b
     public void changeBookDisplay(Book b) {
         remove(bookDisplay);
         BookView bookView = new BookView(this);
@@ -178,7 +189,6 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         setBookDisplay(bookView);
     }
 
-    //TODO
     // MODIFIES: this
     // EFFECTS: initializes BookRoom with number of bookshelves
     private void init() {
@@ -199,22 +209,15 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         myFont = new Font("Sans-Serif", Font.BOLD, 18);
     }
 
-    //TODO
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
-
-    //TODO
-    // ADD ADAPTATION: SPACE INVADERS
-    // Centres frame on desktop
-    // modifies: this
-    // effects:  location of frame is set so frame is centred on desktop
+    // solution adapted from SpaceInvaders CPSC 210 program (SpaceInvaders.centreOnScreen)
+    // MODIFIES: this
+    // EFFECTS:  location of frame is set so frame is centred on desktop
     private void centreOnScreen() {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
 
-    //TODO
+    //EFFECTS: creates label for above bookshelves
     private JLabel drawBookRoomLabel() {
         JLabel label = new JLabel("Your Bookshelves:", SwingConstants.CENTER);
         label.setPreferredSize(new Dimension(panelWidth,panelHeight / 5));
@@ -225,6 +228,7 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return label;
     }
 
+    //getters
     public int getPanelWidth() {
         return panelWidth;
     }
@@ -233,7 +237,11 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return panelHeight;
     }
 
-    //TODO
+    public BookRoom getBookRoom() {
+        return bookRoom;
+    }
+
+    //EFFECTS: returns shelf labeled "All Books" in bookRoom
     public Bookshelf getAllBooks() {
         for (Bookshelf bs : bookRoom.getShelves()) {
             if (bs.getBookshelfLabel().equals("All Books")) {
@@ -243,7 +251,7 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return allBooks;
     }
 
-    //TODO
+    //EFFECTS: returns shelf labeled "Completed" in bookRoom
     public Bookshelf getCompleted() {
         for (Bookshelf bs : bookRoom.getShelves()) {
             if (bs.getBookshelfLabel().equals("Completed")) {
@@ -253,7 +261,7 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return completed;
     }
 
-    //TODO
+    //EFFECTS: returns shelf labeled "To Read" in bookRoom
     public Bookshelf getToRead() {
         for (Bookshelf bs : bookRoom.getShelves()) {
             if (bs.getBookshelfLabel().equals("To Read")) {
@@ -263,7 +271,7 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return toRead;
     }
 
-    //TODO
+    //EFFECTS: returns shelf labeled "Favourites" in bookRoom
     public Bookshelf getFavourites() {
         for (Bookshelf bs : bookRoom.getShelves()) {
             if (bs.getBookshelfLabel().equals("Favourites")) {
@@ -273,11 +281,6 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         return favourites;
     }
 
-    public BookRoom getBookRoom() {
-        return bookRoom;
-    }
-
-    //TODO
     // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoomApp.saveWorkRoom)
     // EFFECTS: saves the bookroom to file
     public void saveBookRoom() {
@@ -285,13 +288,11 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
             jsonWriter.open();
             jsonWriter.write(bookRoom);
             jsonWriter.close();
-            //System.out.println("Saved " + bookRoom.getName() + " to " + JSON_STORE);
         } catch (FileNotFoundException e) {
-            //System.out.println("Unable to write to file: " + JSON_STORE);
+            optionPane.saveError();
         }
     }
 
-    //TODO
     // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoomApp.loadWorkRoom)
     // MODIFIES: this
     // EFFECTS: loads bookroom from file
@@ -299,20 +300,20 @@ public class GraphicBookRoom extends JFrame implements ActionListener {
         try {
             bookRoom = jsonReader.read();
             revalidate();
-            //System.out.println("Loaded " + bookRoom.getName() + " from " + JSON_STORE);
         } catch (IOException e) {
-            //System.out.println("Unable to read from file: " + JSON_STORE);
+            optionPane.loadError();
         }
     }
 
-    //TODO
-    public static void main(String[] args) {
-        new GraphicBookRoom();
-    }
-
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: crafts new OptionPane to tell user their save options
     public void getSaveOption() {
         optionPane = new OptionPane(this);
         optionPane.showSaveOption();
+    }
+
+    //EFFECTS: runs application
+    public static void main(String[] args) {
+        new BookRoomApplication();
     }
 }

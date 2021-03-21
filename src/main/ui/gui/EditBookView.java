@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Book;
 import model.Genre;
@@ -9,30 +9,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+// Represents a panel that allows user to edit a book in app
 public class EditBookView extends ChangePanel implements ActionListener {
+    private static final String newline = "\n";
+    private static final int textFieldColumns = 16;
+
     private JTextField inputField;
     private JTextField titleField;
     private JTextField authorField;
     private JTextField genreField;
     private JTextField ratingField;
     private JTextField reviewField;
-    private GraphicBookRoom gui;
-    private static final String newline = "\n";
-    private static final int textFieldColumns = 15;
+    private BookRoomApplication gui;
     private Book book;
     private JCheckBox allBooksCheckBox;
     private JCheckBox toReadCheckBox;
     private JCheckBox completedCheckBox;
     private JCheckBox favouritesCheckBox;
 
-
-    //TODO
-    public EditBookView(GraphicBookRoom gui) {
+    //EFFECTS: constructs ChangePanel
+    public EditBookView(BookRoomApplication gui) {
         super(gui);
         this.gui = gui;
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: prompts user to input book they'd like to edit
     public void enterTitleToEditView() {
         JLabel text = new JLabel("Enter title of book to edit:");
         add(text, constraints);
@@ -43,13 +45,14 @@ public class EditBookView extends ChangePanel implements ActionListener {
         add(inputField, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds fields for user to edit info about book
     public void editBookFields(Book book) {
         this.book = book;
         Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
         JLabel text = new JLabel("Enter your changes and press submit");
         text.setFont(myFont);
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 4;
         add(text, constraints);
 
         addFieldLabels(constraints);
@@ -59,16 +62,20 @@ public class EditBookView extends ChangePanel implements ActionListener {
         addInstructions(constraints);
 
         constraints.gridx = 1;
+        constraints.gridwidth = 3;
         addBookshelfCheckBoxes(constraints);
 
+        constraints.gridx = 0;
         constraints.gridy += 1;
+        constraints.gridwidth = 4;
         JButton submitButton = new JButton("Submit");
         submitButton.setActionCommand("submit");
         submitButton.addActionListener(this);
         add(submitButton, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds checkboxes for each bookshelf for user to pick which ones they'd like their book on
     private void addBookshelfCheckBoxes(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridy += 1;
@@ -98,11 +105,13 @@ public class EditBookView extends ChangePanel implements ActionListener {
         add(favouritesCheckBox, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds instructions for how the checkboxes work
     private void addInstructions(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridx = 0;
         constraints.gridy += 1;
+        constraints.gridwidth = 1;
         constraints.gridheight = 4;
         JTextArea instructions = new JTextArea("Select the shelves "
                 + "\nyou'd like this book on."
@@ -113,7 +122,8 @@ public class EditBookView extends ChangePanel implements ActionListener {
         add(instructions, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds labels for all the editable fields
     private void addFieldLabels(GridBagConstraints constraints) {
         this.constraints = constraints;
         constraints.gridy += 1;
@@ -138,9 +148,11 @@ public class EditBookView extends ChangePanel implements ActionListener {
         add(reviewLabel, constraints);
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: adds text fields for all editable fields
     private void addTextFields(GridBagConstraints constraints) {
         this.constraints = constraints;
+        constraints.gridwidth = 3;
         constraints.gridx = 1;
         constraints.gridy = 1;
         titleField = new JTextField(book.getTitle(), textFieldColumns);
@@ -163,7 +175,9 @@ public class EditBookView extends ChangePanel implements ActionListener {
         add(reviewField, constraints);
     }
 
-    //TODO
+    //MODIFIES: gui
+    //EFFECTS: processes "submit" button press and edits book based on user input, and changes panel back to main
+    //         ChangePanel
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(newline)) {
@@ -181,7 +195,7 @@ public class EditBookView extends ChangePanel implements ActionListener {
                 int rating = makeRatingInt(ratingString);
                 String review = reviewField.getText();
 
-                book.setAllBookFields(title, author, rating, review, genre);
+                book.setAllBookFields(title, author, genre, rating, review);
 
                 addToSelectedShelves(book);
             }
@@ -189,7 +203,7 @@ public class EditBookView extends ChangePanel implements ActionListener {
         }
     }
 
-    //TODO
+    //EFFECTS: converts string to valid rating int for book, return -1 if ratingString not between 1 and 10
     private int makeRatingInt(String ratingString) {
         int rating;
         try {
@@ -204,7 +218,8 @@ public class EditBookView extends ChangePanel implements ActionListener {
         return rating;
     }
 
-    //TODO
+    //MODIFIES: gui
+    //EFFECTS: if user presses enter after inputting title, sends user to panel for editing book fields
     private void goToEditBookFieldsView() {
         List<Book> allBooks = gui.getAllBooks().getBooksOnShelf();
         String input = inputField.getText();
@@ -216,7 +231,8 @@ public class EditBookView extends ChangePanel implements ActionListener {
         }
     }
 
-    //TODO
+    //MODIFIES: this
+    //EFFECTS: checks which boxes have been checked and adds/removes book from appropriate shelves
     private void addToSelectedShelves(Book book) {
         if (toReadCheckBox.isSelected()) {
             gui.getToRead().addBookToShelf(book);

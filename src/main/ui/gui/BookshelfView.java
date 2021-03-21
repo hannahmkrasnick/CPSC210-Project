@@ -1,4 +1,4 @@
-package gui;
+package ui.gui;
 
 import model.Bookshelf;
 
@@ -8,13 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+// Represents a JPanel for a single bookshelf, with option to view books on that shelf
 public class BookshelfView extends JPanel implements ActionListener {
     private Bookshelf bookshelf;
-    private GraphicBookRoom gui;
+    private BookRoomApplication gui;
 
-    //TODO
-    public BookshelfView(Bookshelf bs, GraphicBookRoom gui) {
+    //EFFECTS: constructs a JPanel with Bookshelf label and button to view book
+    public BookshelfView(Bookshelf bs, BookRoomApplication gui) {
         this.gui = gui;
         this.bookshelf = bs;
         int width = gui.getPanelWidth();
@@ -31,12 +31,12 @@ public class BookshelfView extends JPanel implements ActionListener {
         add(viewButton);
     }
 
-    //TODO
+    // getter
     public Bookshelf getBookshelf() {
         return bookshelf;
     }
 
-    //TODO
+    //EFFECTS: changes books display to books on the shelf
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("view")) {

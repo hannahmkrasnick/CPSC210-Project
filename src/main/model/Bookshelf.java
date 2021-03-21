@@ -27,7 +27,7 @@ public class Bookshelf implements Writable {
         }
     }
 
-    //TODO
+    //EFFECTS: return true if book is not shelf, else false
     public boolean checkBookIsNotAlreadyOnShelf(Book book) {
         for (Book b : booksOnShelf) {
             if (b.getTitle().equalsIgnoreCase(book.getTitle())) {
