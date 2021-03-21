@@ -24,52 +24,13 @@ public class AddBookView extends ChangePanel implements ActionListener {
     public AddBookView(GraphicBookRoom gui) {
         super(gui);
         this.gui = gui;
+        constraints = new GridBagConstraints();
 
-        Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
-        JLabel text = new JLabel("Press add to submit");
-        text.setFont(myFont);
-        constraints.gridwidth = 2;
-        add(text, constraints);
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        constraints.gridwidth = 1;
-        JLabel titleLabel = new JLabel("Title:");
-        add(titleLabel, constraints);
-        titleField = new JTextField(textFieldColumns);
-        constraints.gridx = 1;
-        add(titleField, constraints);
+        addInstructionLabel(constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel authorLabel = new JLabel("Author:");
-        add(authorLabel, constraints);
-        authorField = new JTextField(textFieldColumns);
-        constraints.gridx = 1;
-        add(authorField, constraints);
+        addLabelsForFields(constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel genreLabel = new JLabel("Genre:");
-        add(genreLabel, constraints);
-        genreField = new JTextField(textFieldColumns);
-        constraints.gridx = 1;
-        add(genreField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel ratingLabel = new JLabel("Rating:");
-        add(ratingLabel, constraints);
-        ratingField = new JTextField(textFieldColumns);
-        constraints.gridx = 1;
-        add(ratingField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel reviewLabel = new JLabel("Review:");
-        add(reviewLabel, constraints);
-        reviewField = new JTextField(textFieldColumns);
-        constraints.gridx = 1;
-        add(reviewField, constraints);
+        addTextFields(constraints);
 
         constraints.gridx = 0;
         constraints.gridy += 1;
@@ -85,6 +46,62 @@ public class AddBookView extends ChangePanel implements ActionListener {
         addToFavourites = new JCheckBox("Add to Favourites");
         add(addToFavourites, constraints);
 
+        addSubmitButton(constraints);
+    }
+
+    //TODO
+    private void addTextFields(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        titleField = new JTextField(textFieldColumns);
+        add(titleField, constraints);
+
+        constraints.gridy += 1;
+        authorField = new JTextField(textFieldColumns);
+        add(authorField, constraints);
+
+        constraints.gridy += 1;
+        genreField = new JTextField(textFieldColumns);
+        add(genreField, constraints);
+
+        constraints.gridy += 1;
+        ratingField = new JTextField(textFieldColumns);
+        add(ratingField, constraints);
+
+        constraints.gridy += 1;
+        reviewField = new JTextField(textFieldColumns);
+        add(reviewField, constraints);
+    }
+
+    //TODO
+    private void addLabelsForFields(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        JLabel titleLabel = new JLabel("Title:");
+        add(titleLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel authorLabel = new JLabel("Author:");
+        add(authorLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel genreLabel = new JLabel("Genre:");
+        add(genreLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel ratingLabel = new JLabel("Rating:");
+        add(ratingLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel reviewLabel = new JLabel("Review:");
+        add(reviewLabel, constraints);
+    }
+
+    //TODO
+    private void addSubmitButton(GridBagConstraints constraints) {
+        this.constraints = constraints;
         constraints.gridx = 1;
         constraints.gridy += 1;
         constraints.gridwidth = 1;
@@ -95,22 +112,30 @@ public class AddBookView extends ChangePanel implements ActionListener {
     }
 
     //TODO
+    private void addInstructionLabel(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
+        JLabel text = new JLabel("Press add to submit");
+        text.setFont(myFont);
+        constraints.gridwidth = 2;
+        add(text, constraints);
+    }
+
+    //TODO
     @Override
     public void actionPerformed(ActionEvent e) {
-        Genre genre;
         int rating;
-
         String title = titleField.getText();
         String author = authorField.getText();
         String genreString = genreField.getText();
-        if (Genre.checkGenreExists(genreString)) {
-            genre = Genre.getGenreFromString(genreString);
-        } else {
-            genre = Genre.UNCLASSIFIED;
-        }
+        Genre genre = Genre.getGenreFromString(genreString);
         String ratingString = ratingField.getText();
         try {
             rating = Integer.parseInt(ratingString);
+            if (!Book.checkRatingIsValid(rating)) {
+                rating = -1;
+            }
+
         } catch (NumberFormatException nfe) {
             rating = -1;
         }
@@ -120,19 +145,22 @@ public class AddBookView extends ChangePanel implements ActionListener {
             if (gui.getBookRoom().checkBookDoesNotAlreadyExist(title) && !title.equals("")) {
                 Book newBook = new Book(title, author, genre, rating, review);
                 gui.getAllBooks().addBookToShelf(newBook);
-                if (addToToRead.isSelected()) {
-                    gui.getToRead().addBookToShelf(newBook);
-                }
-                if (addToCompleted.isSelected()) {
-                    gui.getCompleted().addBookToShelf(newBook);
-                }
-                if (addToFavourites.isSelected()) {
-                    gui.getFavourites().addBookToShelf(newBook);
-                }
-
+                addToSelectedShelves(newBook);
             }
         }
         gui.changeToChangePanel();
-        gui.revalidate();
+    }
+
+    //TODO
+    private void addToSelectedShelves(Book b) {
+        if (addToToRead.isSelected()) {
+            gui.getToRead().addBookToShelf(b);
+        }
+        if (addToCompleted.isSelected()) {
+            gui.getCompleted().addBookToShelf(b);
+        }
+        if (addToFavourites.isSelected()) {
+            gui.getFavourites().addBookToShelf(b);
+        }
     }
 }

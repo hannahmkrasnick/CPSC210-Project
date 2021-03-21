@@ -8,18 +8,13 @@ import java.awt.event.ActionListener;
 
 public class ChangePanel extends JPanel implements ActionListener {
     private GraphicBookRoom gui;
-    private static int width;
-    private static int height;
-    private JButton addButton;
-    private JButton deleteButton;
-    private JButton editBookButton;
     protected GridBagConstraints constraints;
 
     //TODO
     public ChangePanel(GraphicBookRoom gui) {
         this.gui = gui;
-        this.width = gui.getPanelWidth();
-        this.height = gui.getPanelHeight();
+        int width = gui.getPanelWidth();
+        int height = gui.getPanelHeight();
         setLayout(new GridBagLayout());
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -35,7 +30,7 @@ public class ChangePanel extends JPanel implements ActionListener {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
-        addButton = new JButton("Add a book");
+        JButton addButton = new JButton("Add a book");
         addButton.setActionCommand("add");
         addButton.addActionListener(this);
         add(addButton, constraints);
@@ -46,7 +41,7 @@ public class ChangePanel extends JPanel implements ActionListener {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 1;
-        editBookButton = new JButton("Edit a book");
+        JButton editBookButton = new JButton("Edit a book");
         editBookButton.setActionCommand("edit");
         editBookButton.addActionListener(this);
         add(editBookButton, constraints);
@@ -57,7 +52,7 @@ public class ChangePanel extends JPanel implements ActionListener {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 2;
-        deleteButton = new JButton("Delete a book");
+        JButton deleteButton = new JButton("Delete a book");
         deleteButton.setActionCommand("delete");
         deleteButton.addActionListener(this);
         add(deleteButton, constraints);
@@ -66,12 +61,16 @@ public class ChangePanel extends JPanel implements ActionListener {
     //TODO
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("edit")) {
-            gui.changeToEditView();
-        } else if (e.getActionCommand().equals("add")) {
-            gui.changeToAddBookView();
-        } else if (e.getActionCommand().equals("delete")) {
-            gui.changeToDeleteBookView();
+        switch (e.getActionCommand()) {
+            case "edit":
+                gui.changeToEditView();
+                break;
+            case "add":
+                gui.changeToAddBookView();
+                break;
+            case "delete":
+                gui.changeToDeleteBookView();
+                break;
         }
     }
 }

@@ -1,7 +1,6 @@
 package gui;
 
 import model.Book;
-import model.Genre;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +13,6 @@ public class DeleteBookView extends ChangePanel implements ActionListener {
     private GraphicBookRoom gui;
     private static final String newline = "\n";
     private static final int textFieldColumns = 15;
-    private List<Book> allBooks;
-
 
     public DeleteBookView(GraphicBookRoom gui) {
         super(gui);
@@ -34,7 +31,7 @@ public class DeleteBookView extends ChangePanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        allBooks = gui.getAllBooks().getBooksOnShelf();
+        List<Book> allBooks = gui.getAllBooks().getBooksOnShelf();
 
         if (e.getActionCommand().equals(newline)) {
             String input = inputField.getText();
@@ -45,7 +42,6 @@ public class DeleteBookView extends ChangePanel implements ActionListener {
                 }
             }
             gui.changeToChangePanel();
-            gui.revalidate();
         }
     }
 }

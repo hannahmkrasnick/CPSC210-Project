@@ -1,7 +1,6 @@
 package gui;
 
 import model.Book;
-import model.Bookshelf;
 import model.Genre;
 
 import javax.swing.*;
@@ -21,16 +20,10 @@ public class EditBookView extends ChangePanel implements ActionListener {
     private static final String newline = "\n";
     private static final int textFieldColumns = 15;
     private Book book;
-    private String title;
-    private String author;
-    private Genre genre;
-    private int rating;
-    private String review;
     private JCheckBox allBooksCheckBox;
     private JCheckBox toReadCheckBox;
     private JCheckBox completedCheckBox;
     private JCheckBox favouritesCheckBox;
-    private List<Book> allBooks;
 
 
     //TODO
@@ -58,59 +51,26 @@ public class EditBookView extends ChangePanel implements ActionListener {
         text.setFont(myFont);
         constraints.gridwidth = 2;
         add(text, constraints);
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        constraints.gridwidth = 1;
-        JLabel titleLabel = new JLabel("Title:");
-        add(titleLabel, constraints);
-        titleField = new JTextField(book.getTitle(), textFieldColumns);
-        constraints.gridx = 1;
-        add(titleField, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel authorLabel = new JLabel("Author:");
-        add(authorLabel, constraints);
-        authorField = new JTextField(book.getAuthor(), textFieldColumns);
-        constraints.gridx = 1;
-        add(authorField, constraints);
+        addFieldLabels(constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel genreLabel = new JLabel("Genre:");
-        add(genreLabel, constraints);
-        genreField = new JTextField(String.valueOf(book.getGenre()), textFieldColumns);
-        constraints.gridx = 1;
-        add(genreField, constraints);
+        addTextFields(constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel ratingLabel = new JLabel("Rating:");
-        add(ratingLabel, constraints);
-        ratingField = new JTextField(String.valueOf(book.getRating()), textFieldColumns);
-        constraints.gridx = 1;
-        add(ratingField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        JLabel reviewLabel = new JLabel("Review:");
-        add(reviewLabel, constraints);
-        reviewField = new JTextField(book.getReview(), textFieldColumns);
-        constraints.gridx = 1;
-        add(reviewField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        constraints.gridheight = 4;
-        JTextArea instructions = new JTextArea("Select the shelves "
-                + "\nyou'd like this book on."
-                + "\nNote: deselecting All "
-                + "\nBooks will delete the "
-                + "\nbook from your Book Room");
-        instructions.setOpaque(false);
-        add(instructions, constraints);
+        addInstructions(constraints);
 
         constraints.gridx = 1;
+        addBookshelfCheckBoxes(constraints);
+
+        constraints.gridy += 1;
+        JButton submitButton = new JButton("Submit");
+        submitButton.setActionCommand("submit");
+        submitButton.addActionListener(this);
+        add(submitButton, constraints);
+    }
+
+    //TODO
+    private void addBookshelfCheckBoxes(GridBagConstraints constraints) {
+        this.constraints = constraints;
         constraints.gridy += 1;
         constraints.gridheight = 1;
         allBooksCheckBox = new JCheckBox("All Books", true);
@@ -136,88 +96,144 @@ public class EditBookView extends ChangePanel implements ActionListener {
             favouritesCheckBox.setSelected(true);
         }
         add(favouritesCheckBox, constraints);
+    }
+
+    //TODO
+    private void addInstructions(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridx = 0;
+        constraints.gridy += 1;
+        constraints.gridheight = 4;
+        JTextArea instructions = new JTextArea("Select the shelves "
+                + "\nyou'd like this book on."
+                + "\nNote: deselecting All "
+                + "\nBooks will delete the "
+                + "\nbook from your Book Room");
+        instructions.setOpaque(false);
+        add(instructions, constraints);
+    }
+
+    //TODO
+    private void addFieldLabels(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridy += 1;
+        constraints.gridwidth = 1;
+        JLabel titleLabel = new JLabel("Title:");
+        add(titleLabel, constraints);
 
         constraints.gridy += 1;
-        JButton submitButton = new JButton("Submit");
-        submitButton.setActionCommand("submit");
-        submitButton.addActionListener(this);
-        add(submitButton, constraints);
+        JLabel authorLabel = new JLabel("Author:");
+        add(authorLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel genreLabel = new JLabel("Genre:");
+        add(genreLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel ratingLabel = new JLabel("Rating:");
+        add(ratingLabel, constraints);
+
+        constraints.gridy += 1;
+        JLabel reviewLabel = new JLabel("Review:");
+        add(reviewLabel, constraints);
+    }
+
+    //TODO
+    private void addTextFields(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        titleField = new JTextField(book.getTitle(), textFieldColumns);
+        add(titleField, constraints);
+
+        constraints.gridy += 1;
+        authorField = new JTextField(book.getAuthor(), textFieldColumns);
+        add(authorField, constraints);
+
+        constraints.gridy += 1;
+        genreField = new JTextField(String.valueOf(book.getGenre()), textFieldColumns);
+        add(genreField, constraints);
+
+        constraints.gridy += 1;
+        ratingField = new JTextField(String.valueOf(book.getRating()), textFieldColumns);
+        add(ratingField, constraints);
+
+        constraints.gridy += 1;
+        reviewField = new JTextField(book.getReview(), textFieldColumns);
+        add(reviewField, constraints);
     }
 
     //TODO
     @Override
     public void actionPerformed(ActionEvent e) {
-        allBooks = gui.getAllBooks().getBooksOnShelf();
-
         if (e.getActionCommand().equals(newline)) {
-            String input = inputField.getText();
-            for (Book b : allBooks) {
-                if (input.equalsIgnoreCase(b.getTitle())) {
-                    gui.changeToEditBookFieldsView(b);
-                }
-            }
+            goToEditBookFieldsView();
+
         } else if (e.getActionCommand().equals("submit")) {
             if (!allBooksCheckBox.isSelected()) {
                 gui.getBookRoom().deleteBookFromBookRoom(book);
             } else {
-                title = titleField.getText();
-                author = authorField.getText();
+                String title = titleField.getText();
+                String author = authorField.getText();
                 String genreString = genreField.getText();
-                if (Genre.checkGenreExists(genreString)) {
-                    genre = Genre.getGenreFromString(genreString);
-                } else {
-                    genre = Genre.UNCLASSIFIED;
-                }
+                Genre genre = Genre.getGenreFromString(genreString);
                 String ratingString = ratingField.getText();
-                try {
-                    rating = Integer.parseInt(ratingString);
-                    if (!book.checkRatingIsValid(rating)) {
-                        rating = -1;
-                    }
+                int rating = makeRatingInt(ratingString);
+                String review = reviewField.getText();
 
-                } catch (NumberFormatException nfe) {
-                    rating = -1;
-                }
-                review = reviewField.getText();
+                book.setAllBookFields(title, author, rating, review, genre);
 
-                book.setTitle(title);
-                book.setAuthor(author);
-                book.setRating(rating);
-                book.setReview(review);
-                book.setGenre(genre);
-
-                if (toReadCheckBox.isSelected()) {
-                    if (gui.getToRead().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getToRead().addBookToShelf(book);
-                    }
-                } else {
-                    if (!gui.getToRead().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getToRead().removeBookFromShelf(book);
-                    }
-                }
-
-                if (completedCheckBox.isSelected()) {
-                    if (gui.getCompleted().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getCompleted().addBookToShelf(book);
-                    }
-                } else {
-                    if (!gui.getCompleted().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getCompleted().removeBookFromShelf(book);
-                    }
-                }
-
-                if (favouritesCheckBox.isSelected()) {
-                    if (gui.getFavourites().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getFavourites().addBookToShelf(book);
-                    }
-                } else {
-                    if (!gui.getFavourites().checkBookIsNotAlreadyOnShelf(book)) {
-                        gui.getFavourites().removeBookFromShelf(book);
-                    }
-                }
+                addToSelectedShelves(book);
             }
             gui.changeToChangePanel();
-            gui.revalidate();
+        }
+    }
+
+    //TODO
+    private int makeRatingInt(String ratingString) {
+        int rating;
+        try {
+            rating = Integer.parseInt(ratingString);
+            if (!Book.checkRatingIsValid(rating)) {
+                rating = -1;
+            }
+
+        } catch (NumberFormatException nfe) {
+            rating = -1;
+        }
+        return rating;
+    }
+
+    //TODO
+    private void goToEditBookFieldsView() {
+        List<Book> allBooks = gui.getAllBooks().getBooksOnShelf();
+        String input = inputField.getText();
+
+        for (Book b : allBooks) {
+            if (input.equalsIgnoreCase(b.getTitle())) {
+                gui.changeToEditBookFieldsView(b);
+            }
+        }
+    }
+
+    //TODO
+    private void addToSelectedShelves(Book book) {
+        if (toReadCheckBox.isSelected()) {
+            gui.getToRead().addBookToShelf(book);
+        } else {
+            gui.getToRead().removeBookFromShelf(book);
+        }
+
+        if (completedCheckBox.isSelected()) {
+            gui.getCompleted().addBookToShelf(book);
+        } else {
+            gui.getCompleted().removeBookFromShelf(book);
+        }
+
+        if (favouritesCheckBox.isSelected()) {
+            gui.getFavourites().addBookToShelf(book);
+        } else {
+            gui.getFavourites().removeBookFromShelf(book);
         }
     }
 }

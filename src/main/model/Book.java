@@ -77,7 +77,7 @@ public class Book implements Writable {
         this.genre = genre;
     }
 
-    public boolean checkRatingIsValid(int rating) {
+    public static boolean checkRatingIsValid(int rating) {
         if (rating >= 1 && rating <= 10) {
             return true;
         }
@@ -95,6 +95,15 @@ public class Book implements Writable {
         json.put("review", review);
         json.put("genre", genre);
         return json;
+    }
+
+    //TODO
+    public void setAllBookFields(String title, String author, int rating, String review, Genre genre) {
+        setTitle(title);
+        setAuthor(author);
+        setRating(rating);
+        setReview(review);
+        setGenre(genre);
     }
 }
 

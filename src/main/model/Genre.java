@@ -15,6 +15,7 @@ public enum Genre {
     PICTUREBOOK,
     READER,
     REFERENCE,
+    SCIENCEFICTION,
     SELFHELP,
     TEXTBOOK,
     UNCLASSIFIED,
@@ -32,10 +33,10 @@ public enum Genre {
 
     //TODO
     public static Genre getGenreFromString(String string) {
-        if (string.equals("")) {
+        if (!checkGenreExists(string)) {
             return Genre.UNCLASSIFIED;
         } else {
-            return Genre.valueOf(string);
+            return Genre.valueOf(string.toUpperCase());
         }
     }
 }

@@ -20,9 +20,11 @@ public class Bookshelf implements Writable {
     }
 
     //MODIFIES: this
-    //EFFECTS: adds book to shelf's list of books
+    //EFFECTS: adds book to shelf's list of books if not already there
     public void addBookToShelf(Book book) {
-        this.booksOnShelf.add(book);
+        if (checkBookIsNotAlreadyOnShelf(book)) {
+            this.booksOnShelf.add(book);
+        }
     }
 
     //TODO
@@ -35,11 +37,12 @@ public class Bookshelf implements Writable {
         return true;
     }
 
-    //REQUIRES: book must be on shelf
     //MODIFIES: this
-    //EFFECTS: removes book from shelf's list of books
+    //EFFECTS: removes book from shelf's list of books if book is on shelf
     public void removeBookFromShelf(Book book) {
-        this.booksOnShelf.remove(book);
+        if (!checkBookIsNotAlreadyOnShelf(book)) {
+            this.booksOnShelf.remove(book);
+        }
     }
 
     //getters

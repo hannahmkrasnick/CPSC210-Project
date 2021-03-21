@@ -11,23 +11,20 @@ import java.awt.event.ActionListener;
 
 public class BookshelfView extends JPanel implements ActionListener {
     private Bookshelf bookshelf;
-    private static int width;
-    private static int height;
-    private JButton viewButton;
     private GraphicBookRoom gui;
 
     //TODO
     public BookshelfView(Bookshelf bs, GraphicBookRoom gui) {
         this.gui = gui;
         this.bookshelf = bs;
-        this.width = gui.getPanelWidth();
-        this.height = gui.getPanelHeight();
+        int width = gui.getPanelWidth();
+        int height = gui.getPanelHeight();
         setPreferredSize(new Dimension(width, height / 5));
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
         setBorder(lineBorder);
         setBackground(Color.PINK);
         JLabel label = new JLabel(bs.getBookshelfLabel());
-        viewButton = new JButton("View");
+        JButton viewButton = new JButton("View");
         viewButton.setActionCommand("view");
         viewButton.addActionListener(this);
         add(label);
