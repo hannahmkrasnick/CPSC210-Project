@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 // Represents a panel that allows user to add a book to app
 public class AddBookView extends ChangePanel implements ActionListener {
@@ -154,7 +155,11 @@ public class AddBookView extends ChangePanel implements ActionListener {
                 Book newBook = new Book(title, author, genre, rating, review);
                 addToSelectedShelves(newBook);
                 OptionPane confirmBookAdded = new OptionPane(gui);
-                confirmBookAdded.confirmBookAddedPane();
+                try {
+                    confirmBookAdded.confirmBookAddedPane();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
         }
         gui.changeToChangePanel();

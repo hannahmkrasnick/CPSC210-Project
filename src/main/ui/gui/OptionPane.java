@@ -1,6 +1,14 @@
 package ui.gui;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 //Represents pop up windows for getting information from user or telling user info
 public class OptionPane extends JFrame {
@@ -43,10 +51,22 @@ public class OptionPane extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    //TODO
-    //EFFECTS: confirms to user that book was added and PLAYS A FUN CONFIRMATION SOUND
-    public void confirmBookAddedPane() {
+    //EFFECTS: confirms to user that book was added and plays a fun confirmation sound
+    public void confirmBookAddedPane() throws IOException {
+        playSound();
         JOptionPane.showConfirmDialog(null, "Book was successfully added!",
                 "Success", JOptionPane.DEFAULT_OPTION);
+    }
+
+    //solution adapted from https://alvinalexander.com/java/java-audio-example-java-au-play-sound/
+    //EFFECTS: plays audio from file
+    public void playSound() throws IOException {
+        String successSound = "/Users/hannahmadden-krasnick/OneDrive/"
+                + "School/BCS year 1/CPSC 210/Project/lib/SuccessSound.wav";
+        InputStream in = new FileInputStream(successSound);
+
+        AudioStream audioStream = new AudioStream(in);
+
+        AudioPlayer.player.start(audioStream);
     }
 }
