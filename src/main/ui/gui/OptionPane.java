@@ -33,7 +33,7 @@ public class OptionPane extends JFrame {
                 + "to file?", "Save Book Room", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (save == JOptionPane.YES_OPTION) {
             gui.saveBookRoom();
-            gui.quit();
+            gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
 

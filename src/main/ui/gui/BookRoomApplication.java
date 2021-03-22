@@ -352,8 +352,4 @@ public class BookRoomApplication extends JFrame {
     public static void main(String[] args) {
         new BookRoomApplication();
     }
-
-    public void quit() {
-        System.exit(0);
-    }
 }
