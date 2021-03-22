@@ -33,8 +33,8 @@ public class OptionPane extends JFrame {
                 + "to file?", "Save Book Room", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (save == JOptionPane.YES_OPTION) {
             gui.saveBookRoom();
-            gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     //EFFECTS: tells user there was an error loading book room
