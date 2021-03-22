@@ -33,6 +33,8 @@ public class BookRoomApplication extends JFrame {
     private JPanel editView;
     private OptionPane optionPane;
     private Font myFont;
+    private Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
+
 
     //EFFECTS: constructs a book room for users to add books to
     public BookRoomApplication() {
@@ -56,7 +58,7 @@ public class BookRoomApplication extends JFrame {
 
         addBookshelfPanels(constraints);
 
-        setBooksDisplay(new BooksView(this, allBooks));
+        setBooksDisplay(new BooksView(this));
 
         setBookDisplay(new BookView(this));
 
@@ -70,11 +72,12 @@ public class BookRoomApplication extends JFrame {
         setVisible(true);
     }
 
+    //MODIFIES: this
+    //EFFECTS: adds panel to far right with all genres
     private void addGenrePanel() {
         myFont = new Font("Sans-Serif", Font.BOLD, 18);
         constraints = new GridBagConstraints();
         constraints.gridx = 2;
-        constraints.gridy = 0;
         constraints.gridheight = 6;
         GridBagConstraints genrePanelConstraints = new GridBagConstraints();
         genrePanelConstraints.gridx = 0;
@@ -86,6 +89,7 @@ public class BookRoomApplication extends JFrame {
         JLabel genreTitle = new JLabel("Genres:");
         genreTitle.setFont(myFont);
         genreTitle.setForeground(Color.WHITE);
+        genrePanel.setBorder(lineBorder);
         genrePanel.add(genreTitle, genrePanelConstraints);
         for (Genre genre : Genre.values()) {
             genrePanelConstraints.gridy += 1;
@@ -193,7 +197,8 @@ public class BookRoomApplication extends JFrame {
     //EFFECTS: changes books display to new BooksView that displays bookshelf
     public void changeBooksDisplay(Bookshelf bookshelf) {
         remove(contentView);
-        BooksView books = new BooksView(this, bookshelf);
+        BooksView books = new BooksView(this);
+        books.showBookshelfWithBooks(this, bookshelf);
         setBooksDisplay(books);
     }
 
@@ -254,7 +259,6 @@ public class BookRoomApplication extends JFrame {
         label.setForeground(Color.WHITE);
         label.setOpaque(true);
         label.setBackground(Color.DARK_GRAY);
-        Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
         label.setBorder(lineBorder);
         label.setFont(myFont);
         return label;
@@ -347,5 +351,9 @@ public class BookRoomApplication extends JFrame {
     //EFFECTS: runs application
     public static void main(String[] args) {
         new BookRoomApplication();
+    }
+
+    public void quit() {
+        System.exit(0);
     }
 }

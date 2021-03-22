@@ -33,7 +33,7 @@ public class OptionPane extends JFrame {
                 + "to file?", "Save Book Room", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (save == JOptionPane.YES_OPTION) {
             gui.saveBookRoom();
-            gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gui.quit();
         }
     }
 
@@ -60,7 +60,7 @@ public class OptionPane extends JFrame {
     //EFFECTS: plays audio from file
     public void playSound() throws IOException {
         String successSound = "/Users/hannahmadden-krasnick/OneDrive/"
-                + "School/BCS year 1/CPSC 210/Project/lib/SuccessSound.wav";
+                + "School/BCS year 1/CPSC 210/Project/data/SuccessSound.wav";
         InputStream in = new FileInputStream(successSound);
 
         AudioStream audioStream = new AudioStream(in);
