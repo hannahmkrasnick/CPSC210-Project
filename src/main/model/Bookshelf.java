@@ -6,6 +6,7 @@ import persistence.Writable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // Represents an bookshelf with a label and a list of books
 public class Bookshelf implements Writable {
@@ -55,8 +56,36 @@ public class Bookshelf implements Writable {
     }
 
     //setters
-    public void setBookshelfLabel(String bookshelfLabel) {
-        this.bookshelfLabel = bookshelfLabel;
+    public void setBookshelfLabel(String label) {
+        this.bookshelfLabel = label;
+    }
+
+    //EFFECTS: trims string to 13 characters or less
+    public static String makeLabelRightLengthForGui(String label) {
+        if (label.length() > 13) {
+            return label.substring(0, 13);
+        } else {
+            return label;
+        }
+    }
+
+    //EFFECTS: compares if bookshelves are equal based on their labels
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Bookshelf)) {
+            return false;
+        }
+        Bookshelf bookshelf = (Bookshelf) o;
+        return bookshelfLabel.equalsIgnoreCase(bookshelf.bookshelfLabel);
+    }
+
+    //EFFECTS: initiates a bookshelf's hash code as based on their label
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookshelfLabel);
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (Thingy.toJson)

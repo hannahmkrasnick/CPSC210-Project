@@ -57,6 +57,7 @@ public class OptionPane extends JFrame {
     }
 
     //solution adapted from https://alvinalexander.com/java/java-audio-example-java-au-play-sound/
+    //sound from: https://freesound.org/people/grunz/sounds/109663/ with creative commons license
     //EFFECTS: plays audio from file
     public void playSound() throws IOException {
         String successSound = "/Users/hannahmadden-krasnick/OneDrive/"

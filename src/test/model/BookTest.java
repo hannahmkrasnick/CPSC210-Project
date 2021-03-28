@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookTest {
     private Book testBook1;
     private Book testBook2;
+    private Book testBook3;
 
     @BeforeEach
     void runBefore() {
         testBook1 = new Book("ABC");
         testBook2 = new Book("DEF", "Author name", Genre.COMIC, 8, "Pretty good");
+        testBook3 = new Book("ABC");
     }
 
     @Test
@@ -80,7 +82,76 @@ class BookTest {
         int rating = 8;
         String review = "Pretty good";
         Book book = new Book("ABC");
-
         book.setAllBookFields(title, author, genre, rating, review);
+
+        assertEquals(new Book("DEF"), book);
+    }
+
+    @Test
+    void testMakeTitleRightLengthForGui() {
+        assertEquals("01234567890123456789", testBook1.makeTitleRightLengthForGui("01234567890123456789"));
+        assertEquals("01234567890123456789", testBook1.makeTitleRightLengthForGui("01234567890123456789012"));
+    }
+
+    @Test
+    void testMakeAuthorRightLengthForGui() {
+        assertEquals("0123456789012345678901234",
+                testBook1.makeAuthorRightLengthForGui("0123456789012345678901234"));
+        assertEquals("0123456789012345678901234",
+                testBook1.makeAuthorRightLengthForGui("012345678901234567890123456789"));
+    }
+
+    @Test
+    void testMakeReviewRightLengthForGui() {
+        assertEquals("01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789",
+                testBook1.makeReviewRightLengthForGui("01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"));
+        assertEquals("01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789",
+                testBook1.makeReviewRightLengthForGui("01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"
+                        + "01234567890123456789012345678901234567890123456789"));
+    }
+
+    @Test
+    void testMakeRatingInt() {
+        assertEquals(1, testBook1.makeRatingInt("1"));
+        assertEquals(10, testBook1.makeRatingInt("10"));
+        assertEquals(-1, testBook1.makeRatingInt("0"));
+        assertEquals(-1, testBook1.makeRatingInt("11"));
+        assertEquals(-1, testBook1.makeRatingInt("hello"));
+    }
+
+    @Test
+    void testHashCodeAndEquals() {
+        assertFalse(testBook1.equals(testBook2));
+        assertEquals(testBook3, testBook1);
+        assertFalse(testBook1.equals("test"));
+        assertEquals(testBook3.hashCode(), testBook1.hashCode());
     }
 }

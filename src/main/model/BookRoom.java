@@ -43,7 +43,7 @@ public class BookRoom implements Writable {
         return true;
     }
 
-    //EFFECTS: checks if a book with same title is already in room
+    //EFFECTS: returns false if a book with same title is already in room, else returns true
     public boolean checkBookDoesNotAlreadyExist(String title) {
         title = title.toLowerCase();
         for (Bookshelf b : this.getShelves()) {

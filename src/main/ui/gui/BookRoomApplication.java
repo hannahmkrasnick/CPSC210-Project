@@ -28,13 +28,14 @@ public class BookRoomApplication extends JFrame {
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
     private GridBagConstraints constraints;
-    private JPanel contentView;
-    private JPanel bookDisplay;
+    private BooksView booksView;
+    private BookshelvesPanel bookshelvesPanel;
+    private BookView bookDisplay;
     private JPanel editView;
     private OptionPane optionPane;
     private Font myFont;
     private Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
-
+    private int currentPage;
 
     //EFFECTS: constructs a book room for users to add books to
     public BookRoomApplication() {
@@ -48,17 +49,15 @@ public class BookRoomApplication extends JFrame {
         setUndecorated(false);
         setVisible(false);
         setLayout(new GridBagLayout());
-        setBackground(Color.BLACK);
+        setBackground(Color.WHITE);
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 0;
 
-        add(drawBookRoomLabel(), constraints);
+        setUpBookshelvesView(new BookshelvesPanel(this));
 
-        addBookshelfPanels(constraints);
-
-        setBooksDisplay(new BooksView(this));
+        setBooksDisplay(new BooksView(this, -1));
 
         setBookDisplay(new BookView(this));
 
@@ -75,7 +74,6 @@ public class BookRoomApplication extends JFrame {
     //MODIFIES: this
     //EFFECTS: adds panel to far right with all genres
     private void addGenrePanel() {
-        myFont = new Font("Sans-Serif", Font.BOLD, 18);
         constraints = new GridBagConstraints();
         constraints.gridx = 2;
         constraints.gridheight = 6;
@@ -84,7 +82,7 @@ public class BookRoomApplication extends JFrame {
         genrePanelConstraints.gridy = 0;
         JPanel genrePanel = new JPanel();
         genrePanel.setLayout(new GridBagLayout());
-        genrePanel.setPreferredSize(new Dimension(150, panelHeight * 2));
+        genrePanel.setPreferredSize(new Dimension(150, panelHeight * 2 + 120));
         genrePanel.setBackground(Color.DARK_GRAY);
         JLabel genreTitle = new JLabel("Genres:");
         genreTitle.setFont(myFont);
@@ -93,7 +91,7 @@ public class BookRoomApplication extends JFrame {
         genrePanel.add(genreTitle, genrePanelConstraints);
         for (Genre genre : Genre.values()) {
             genrePanelConstraints.gridy += 1;
-            JLabel newLabel = new JLabel(Genre.convertGenreToReadableString(genre));
+            JLabel newLabel = new JLabel(genre.getString());
             newLabel.setForeground(Color.WHITE);
             genrePanel.add(newLabel, genrePanelConstraints);
         }
@@ -113,14 +111,23 @@ public class BookRoomApplication extends JFrame {
     }
 
     //MODIFIES: this
-    //EFFECTS: adds panels for each bookshelf to this
-    private void addBookshelfPanels(GridBagConstraints constraints) {
-        this.constraints = constraints;
-        for (Bookshelf bs : bookRoom.getShelves()) {
-            BookshelfView bookshelfView = new BookshelfView(bs, this);
-            constraints.gridy += 1;
-            add(bookshelfView, constraints);
-        }
+    //EFFECTS: sets up shelves view (top left) with existing bookshelves
+    public void setUpBookshelvesView(BookshelvesPanel newBookshelvesPanel) {
+        constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        bookshelvesPanel = newBookshelvesPanel;
+        add(newBookshelvesPanel, constraints);
+        revalidate();
+    }
+
+    //MODIFIES: this
+    //EFFECTS: changes edit view to EditBookView where user can enter title of book to edit
+    public void changeBookshelvesView() {
+        remove(bookshelvesPanel);
+        BookshelvesPanel newPanel = new BookshelvesPanel(this);
+        setUpBookshelvesView(newPanel);
     }
 
     //MODIFIES: this
@@ -133,6 +140,22 @@ public class BookRoomApplication extends JFrame {
         editView = jpanel;
         add(jpanel, constraints);
         revalidate();
+    }
+
+    //MODIFIES: this
+    //EFFECTS: changes edit view to addBookshelfView where user can enter title of shelf to add
+    public void changeToAddBookshelfView() {
+        remove(editView);
+        AddBookshelfView newPanel = new AddBookshelfView(this);
+        setEditView(newPanel);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: changes edit view to deleteBookshelfView where user can enter title of shelf to delete
+    public void changeToDeleteBookshelfView() {
+        remove(editView);
+        DeleteBookshelfView newPanel = new DeleteBookshelfView(this);
+        setEditView(newPanel);
     }
 
     //MODIFIES: this
@@ -169,6 +192,12 @@ public class BookRoomApplication extends JFrame {
         setEditView(newPanel);
     }
 
+    public void changeToSearchBookView() {
+        remove(editView);
+        SearchBookView newPanel = new SearchBookView(this);
+        setEditView(newPanel);
+    }
+
     //MODIFIES: this
     //EFFECTS: changes edit view to default (ChangePanel with buttons)
     public void changeToChangePanel() {
@@ -177,41 +206,45 @@ public class BookRoomApplication extends JFrame {
         changePanel.makeAddButton();
         changePanel.makeEditBookButton();
         changePanel.makeDeleteButton();
+        changePanel.makeSearchButton();
+        changePanel.makeAddBookshelfButton();
+        changePanel.makeDeleteBookshelfButton();
         setEditView(changePanel);
     }
 
     //MODIFIES: this
     //EFFECTS: sets books display (top right) panel to given jpanel
-    private void setBooksDisplay(JPanel jpanel) {
+    private void setBooksDisplay(BooksView newBooksView) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 1;
         constraints.gridy = 0;
         constraints.gridheight = 5;
-        contentView = jpanel;
-        add(jpanel, constraints);
+        booksView = newBooksView;
+        add(newBooksView, constraints);
         revalidate();
     }
 
     //MODIFIES: this
     //EFFECTS: changes books display to new BooksView that displays bookshelf
-    public void changeBooksDisplay(Bookshelf bookshelf) {
-        remove(contentView);
-        BooksView books = new BooksView(this);
-        books.showBookshelfWithBooks(this, bookshelf);
+    public void changeBooksDisplay(Bookshelf bookshelf, int currentPage) {
+        this.currentPage = currentPage;
+        remove(booksView);
+        BooksView books = new BooksView(this, currentPage);
+        books.showBookshelfWithBooks(bookshelf);
         setBooksDisplay(books);
     }
 
     //MODIFIES: this
     //EFFECTS: sets book display (bottom right) panel to given jpanel
-    private void setBookDisplay(JPanel jpanel) {
+    void setBookDisplay(BookView bookPanel) {
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 1;
         constraints.gridy = 5;
         constraints.gridheight = 1;
-        bookDisplay = jpanel;
-        add(jpanel, constraints);
+        bookDisplay = bookPanel;
+        add(bookPanel, constraints);
         revalidate();
     }
 
@@ -252,18 +285,6 @@ public class BookRoomApplication extends JFrame {
         setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
 
-    //EFFECTS: creates label for above bookshelves
-    private JLabel drawBookRoomLabel() {
-        JLabel label = new JLabel("Your Bookshelves:", SwingConstants.CENTER);
-        label.setPreferredSize(new Dimension(panelWidth,panelHeight / 5));
-        label.setForeground(Color.WHITE);
-        label.setOpaque(true);
-        label.setBackground(Color.DARK_GRAY);
-        label.setBorder(lineBorder);
-        label.setFont(myFont);
-        return label;
-    }
-
     //getters
     public int getPanelWidth() {
         return panelWidth;
@@ -277,44 +298,19 @@ public class BookRoomApplication extends JFrame {
         return bookRoom;
     }
 
-    //EFFECTS: returns shelf labeled "All Books" in bookRoom
-    public Bookshelf getAllBooks() {
-        for (Bookshelf bs : bookRoom.getShelves()) {
-            if (bs.getBookshelfLabel().equals("All Books")) {
-                return bs;
-            }
-        }
-        return allBooks;
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    //EFFECTS: returns shelf labeled "Completed" in bookRoom
-    public Bookshelf getCompleted() {
+    //EFFECTS: finds and returns shelf with given label in book room
+    public Bookshelf getShelfWithLabel(String bookshelfLabel) {
+        Bookshelf toFind = new Bookshelf(bookshelfLabel);
         for (Bookshelf bs : bookRoom.getShelves()) {
-            if (bs.getBookshelfLabel().equals("Completed")) {
+            if (bs.equals(toFind)) {
                 return bs;
             }
         }
-        return completed;
-    }
-
-    //EFFECTS: returns shelf labeled "To Read" in bookRoom
-    public Bookshelf getToRead() {
-        for (Bookshelf bs : bookRoom.getShelves()) {
-            if (bs.getBookshelfLabel().equals("To Read")) {
-                return bs;
-            }
-        }
-        return toRead;
-    }
-
-    //EFFECTS: returns shelf labeled "Favourites" in bookRoom
-    public Bookshelf getFavourites() {
-        for (Bookshelf bs : bookRoom.getShelves()) {
-            if (bs.getBookshelfLabel().equals("Favourites")) {
-                return bs;
-            }
-        }
-        return favourites;
+        return null;
     }
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (WorkRoomApp.saveWorkRoom)
@@ -348,7 +344,12 @@ public class BookRoomApplication extends JFrame {
         optionPane.showSaveOption();
     }
 
-    //EFFECTS: runs application
+    //EFFECTS: returns the currently displayed shelf in booksView
+    public Bookshelf getCurrentlyDisplayedBookshelf() {
+        return booksView.getCurrentlyDisplayedBookshelf();
+    }
+
+        //EFFECTS: runs application
     public static void main(String[] args) {
         new BookRoomApplication();
     }

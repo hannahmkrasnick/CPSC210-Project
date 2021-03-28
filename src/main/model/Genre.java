@@ -2,26 +2,41 @@ package model;
 
 // Represents all genres a book can be assigned to
 public enum Genre {
-    BIOGRAPHY,
-    BOARD,
-    CLASSIC,
-    COMIC,
-    COOK_BOOK,
-    EASY_CHAPTER,
-    FANTASY,
-    FICTION,
-    GRAPHIC,
-    INDIGENOUS,
-    MIDDLE_GRADE,
-    NON_FICTION,
-    PICTURE_BOOK,
-    READER,
-    REFERENCE,
-    SCIENCE_FICTION,
-    SELFHELP,
-    TEXTBOOK,
-    UNCLASSIFIED,
-    YOUNG_ADULT;
+    BIOGRAPHY("Biography"),
+    BOARD("Board"),
+    CLASSIC("Classic"),
+    COMIC("Comic"),
+    COOKBOOK("Cookbook"),
+    EASYCHAPTER("Easy chapter"),
+    FANTASY("Fantasy"),
+    FICTION("Fiction"),
+    GRAPHIC("Graphic"),
+    HISTORICALFICTION("Historical fiction"),
+    INDIGENOUS("Indigenous"),
+    MIDDLEGRADE("Middle-grade"),
+    NONFICTION("Non-fiction"),
+    PICTUREBOOK("Picture book"),
+    READER("Reader"),
+    REFERENCE("Reference"),
+    ROMANCE("Romance"),
+    SCIENCEFICTION("Science fiction"),
+    SELFHELP("Selfhelp"),
+    TEXTBOOK("Textbook"),
+    UNCLASSIFIED("Unclassified"),
+    YOUNGADULT("Young adult");
+
+    private String genreString;
+
+    //Solution adapted from https://www.java67.com/2012/08/how-to-convert-enum-to-string-in-java.html
+    //EFFECTS: initiates a string associated with each genre enum
+    Genre(String genreString) {
+        this.genreString = genreString;
+    }
+
+    //EFFECTS: returns genreString
+    public String getString() {
+        return genreString;
+    }
 
     // EFFECTS: checks if genre is valid (i.e. it exists)
     public static boolean checkGenreExists(String str) {
@@ -35,30 +50,11 @@ public enum Genre {
 
     //EFFECTS: returns genre that matches the string, or UNCLASSIFIED if invalid string
     public static Genre getGenreFromString(String string) {
+        string = string.replaceAll("\\s", "");
         if (!checkGenreExists(string)) {
             return Genre.UNCLASSIFIED;
         } else {
             return Genre.valueOf(string.toUpperCase());
         }
-    }
-
-    // solution adapted from:
-    // https://stackoverflow.com/questions/1086123/is-there-a-method-for-string-conversion-to-title-case
-    // EFFECTS: converts a genre into a capitalized string
-    public static String convertGenreToReadableString(Genre genre) {
-        String input = String.valueOf(genre).toLowerCase();
-        StringBuilder titleCase = new StringBuilder(input.length());
-        boolean nextTitleCase = true;
-
-        for (char c : input.toCharArray()) {
-            if (nextTitleCase) {
-                c = Character.toTitleCase(c);
-                nextTitleCase = false;
-            }
-
-            titleCase.append(c);
-        }
-
-        return titleCase.toString();
     }
 }

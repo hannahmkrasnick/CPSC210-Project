@@ -21,7 +21,7 @@ public class ChangePanel extends JPanel implements ActionListener {
         constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(width, height + 120));
         setBackground(color);
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 4);
         setBorder(lineBorder);
@@ -63,6 +63,42 @@ public class ChangePanel extends JPanel implements ActionListener {
         add(deleteButton, constraints);
     }
 
+    //MODIFIES: this
+    //EFFECTS: creates a button for searching for a book and adds it to this
+    public void makeSearchButton() {
+        constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        JButton searchButton = new JButton("Search books");
+        searchButton.setActionCommand("search");
+        searchButton.addActionListener(this);
+        add(searchButton, constraints);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: creates a button for adding a bookshelf and adds it to this
+    public void makeAddBookshelfButton() {
+        constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        JButton addShelfButton = new JButton("Add a bookshelf");
+        addShelfButton.setActionCommand("addShelf");
+        addShelfButton.addActionListener(this);
+        add(addShelfButton, constraints);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: creates a button for deleting a bookshelf and adds it to this
+    public void makeDeleteBookshelfButton() {
+        constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        JButton deleteShelfButton = new JButton("Delete a bookshelf");
+        deleteShelfButton.setActionCommand("deleteShelf");
+        deleteShelfButton.addActionListener(this);
+        add(deleteShelfButton, constraints);
+    }
+
     //MODIFIES: gui
     //EFFECTS: switches edit panel in gui depending on which button was pressed
     @Override
@@ -76,6 +112,15 @@ public class ChangePanel extends JPanel implements ActionListener {
                 break;
             case "delete":
                 gui.changeToDeleteBookView();
+                break;
+            case "search":
+                gui.changeToSearchBookView();
+                break;
+            case "addShelf":
+                gui.changeToAddBookshelfView();
+                break;
+            case "deleteShelf":
+                gui.changeToDeleteBookshelfView();
                 break;
         }
     }

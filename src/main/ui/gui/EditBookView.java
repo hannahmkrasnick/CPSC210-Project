@@ -1,12 +1,14 @@
 package ui.gui;
 
 import model.Book;
+import model.Bookshelf;
 import model.Genre;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 // Represents a panel that allows user to edit a book in app
@@ -22,10 +24,9 @@ public class EditBookView extends ChangePanel implements ActionListener {
     private JTextField reviewField;
     private BookRoomApplication gui;
     private Book book;
-    private JCheckBox allBooksCheckBox;
-    private JCheckBox toReadCheckBox;
-    private JCheckBox completedCheckBox;
-    private JCheckBox favouritesCheckBox;
+    private Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
+    private List<JCheckBox> shelfCheckBoxes;
+
 
     //EFFECTS: constructs ChangePanel
     public EditBookView(BookRoomApplication gui) {
@@ -37,6 +38,7 @@ public class EditBookView extends ChangePanel implements ActionListener {
     //EFFECTS: prompts user to input book they'd like to edit
     public void enterTitleToEditView() {
         JLabel text = new JLabel("Enter title of book to edit:");
+        text.setFont(myFont);
         add(text, constraints);
         inputField = new JTextField(textFieldColumns);
         inputField.setActionCommand(newline);
@@ -49,23 +51,25 @@ public class EditBookView extends ChangePanel implements ActionListener {
     //EFFECTS: adds fields for user to edit info about book
     public void editBookFields(Book book) {
         this.book = book;
-        Font myFont = new Font("Sans-Serif", Font.BOLD, 14);
-        JLabel text = new JLabel("Enter your changes and press submit");
-        text.setFont(myFont);
-        constraints.gridwidth = 4;
-        add(text, constraints);
+        addTitle(constraints);
 
+        constraints.gridy += 1;
+        constraints.gridwidth = 1;
         addFieldLabels(constraints);
 
+        constraints.gridwidth = 3;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
         addTextFields(constraints);
 
-        addInstructions(constraints);
+        addFieldInstructions(constraints);
 
-        constraints.gridx = 1;
-        constraints.gridwidth = 3;
+        constraints.gridy += 1;
         addBookshelfCheckBoxes(constraints);
 
-        constraints.gridx = 0;
+        constraints.gridy += 1;
+        addInstructions(constraints);
+
         constraints.gridy += 1;
         constraints.gridwidth = 4;
         JButton submitButton = new JButton("Submit");
@@ -75,75 +79,35 @@ public class EditBookView extends ChangePanel implements ActionListener {
     }
 
     //MODIFIES: this
-    //EFFECTS: adds checkboxes for each bookshelf for user to pick which ones they'd like their book on
-    private void addBookshelfCheckBoxes(GridBagConstraints constraints) {
+    //EFFECTS: constructs title for this
+    private void addTitle(GridBagConstraints constraints) {
         this.constraints = constraints;
-        constraints.gridy += 1;
-        constraints.gridheight = 1;
-        allBooksCheckBox = new JCheckBox("All Books", true);
-        add(allBooksCheckBox, constraints);
-
-        constraints.gridy += 1;
-        toReadCheckBox = new JCheckBox("To Read");
-        if (!gui.getToRead().checkBookIsNotAlreadyOnShelf(book)) {
-            toReadCheckBox.setSelected(true);
-        }
-        add(toReadCheckBox, constraints);
-
-        constraints.gridy += 1;
-        completedCheckBox = new JCheckBox("Completed");
-        if (!gui.getCompleted().checkBookIsNotAlreadyOnShelf(book)) {
-            completedCheckBox.setSelected(true);
-        }
-        add(completedCheckBox, constraints);
-
-        constraints.gridy += 1;
-        favouritesCheckBox = new JCheckBox("Favourites");
-        if (!gui.getFavourites().checkBookIsNotAlreadyOnShelf(book)) {
-            favouritesCheckBox.setSelected(true);
-        }
-        add(favouritesCheckBox, constraints);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: adds instructions for how the checkboxes work
-    private void addInstructions(GridBagConstraints constraints) {
-        this.constraints = constraints;
-        constraints.gridx = 0;
-        constraints.gridy += 1;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 4;
-        JTextArea instructions = new JTextArea("Select the shelves "
-                + "\nyou'd like this book on."
-                + "\nNote: deselecting All "
-                + "\nBooks will delete the "
-                + "\nbook from your Book Room");
-        instructions.setOpaque(false);
-        add(instructions, constraints);
+        JLabel text = new JLabel("Enter your changes and press submit");
+        text.setFont(myFont);
+        constraints.gridwidth = 4;
+        add(text, constraints);
     }
 
     //MODIFIES: this
     //EFFECTS: adds labels for all the editable fields
     private void addFieldLabels(GridBagConstraints constraints) {
         this.constraints = constraints;
-        constraints.gridy += 1;
-        constraints.gridwidth = 1;
         JLabel titleLabel = new JLabel("Title:");
         add(titleLabel, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         JLabel authorLabel = new JLabel("Author:");
         add(authorLabel, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         JLabel genreLabel = new JLabel("Genre:");
         add(genreLabel, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         JLabel ratingLabel = new JLabel("Rating:");
         add(ratingLabel, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         JLabel reviewLabel = new JLabel("Review:");
         add(reviewLabel, constraints);
     }
@@ -152,27 +116,108 @@ public class EditBookView extends ChangePanel implements ActionListener {
     //EFFECTS: adds text fields for all editable fields
     private void addTextFields(GridBagConstraints constraints) {
         this.constraints = constraints;
-        constraints.gridwidth = 3;
-        constraints.gridx = 1;
-        constraints.gridy = 1;
         titleField = new JTextField(book.getTitle(), textFieldColumns);
         add(titleField, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         authorField = new JTextField(book.getAuthor(), textFieldColumns);
         add(authorField, constraints);
 
-        constraints.gridy += 1;
-        genreField = new JTextField(String.valueOf(book.getGenre()), textFieldColumns);
+        constraints.gridy += 2;
+        String genre = book.getGenre().getString();
+        if (genre.equals(Genre.UNCLASSIFIED.getString())) {
+            genre = "";
+        }
+        genreField = new JTextField(genre, textFieldColumns);
         add(genreField, constraints);
 
-        constraints.gridy += 1;
-        ratingField = new JTextField(String.valueOf(book.getRating()), textFieldColumns);
+        constraints.gridy += 2;
+        String rating = String.valueOf(book.getRating());
+        if (book.getRating() == -1) {
+            rating = "";
+        }
+        ratingField = new JTextField(rating, textFieldColumns);
         add(ratingField, constraints);
 
-        constraints.gridy += 1;
+        constraints.gridy += 2;
         reviewField = new JTextField(book.getReview(), textFieldColumns);
         add(reviewField, constraints);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds instructions for inputting text to each field
+    private void addFieldInstructions(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 4;
+        JTextArea titleInstructions = makeInstruction("Title max. 20 characters, must be unique");
+        add(titleInstructions, constraints);
+
+        constraints.gridy += 2;
+        JTextArea authorInstructions = makeInstruction("Author max. 25 characters");
+        add(authorInstructions, constraints);
+
+        constraints.gridy += 2;
+        JTextArea genreInstructions = makeInstruction("See bar on right for valid genres");
+        add(genreInstructions, constraints);
+
+        constraints.gridy += 2;
+        JTextArea ratingInstructions = makeInstruction("Enter no. between 1 and 10");
+        add(ratingInstructions, constraints);
+
+        constraints.gridy += 2;
+        JTextArea reviewInstructions = makeInstruction("Review max. 400 characters");
+        add(reviewInstructions, constraints);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: constructs a JTextArea with given text
+    private JTextArea makeInstruction(String text) {
+        JTextArea instruction = new JTextArea(text);
+        instruction.setForeground(Color.GRAY);
+        instruction.setOpaque(false);
+        instruction.setEditable(false);
+        return instruction;
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds instructions for how the checkboxes work
+    private void addInstructions(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridx = 0;
+        constraints.gridwidth = 4;
+        constraints.gridheight = 1;
+        JTextArea instructions = new JTextArea("Select the shelves you'd like this book on."
+                + "\nNote: deselecting All Books will delete the book.");
+        instructions.setOpaque(false);
+        instructions.setEditable(false);
+        add(instructions, constraints);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds checkboxes for each bookshelf for user to pick which ones they'd like their book on
+    private void addBookshelfCheckBoxes(GridBagConstraints constraints) {
+        this.constraints = constraints;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 1;
+        constraints.gridx = 1;
+        shelfCheckBoxes = new ArrayList<>();
+        List<Bookshelf> shelves = gui.getBookRoom().getShelves();
+        for (int i = 0; i <= shelves.size() - 1; i++) {
+            JCheckBox newCheckBox = new JCheckBox(shelves.get(i).getBookshelfLabel());
+            if (shelves.get(i).getBooksOnShelf().contains(book)) {
+                newCheckBox.setSelected(true);
+            }
+            shelfCheckBoxes.add(newCheckBox);
+            if (constraints.gridx == 0) {
+                constraints.gridx = 2;
+            } else {
+                constraints.gridx = 0;
+                constraints.gridy += 1;
+            }
+            add(newCheckBox, constraints);
+        }
     }
 
     //MODIFIES: gui
@@ -184,72 +229,57 @@ public class EditBookView extends ChangePanel implements ActionListener {
             goToEditBookFieldsView();
 
         } else if (e.getActionCommand().equals("submit")) {
-            if (!allBooksCheckBox.isSelected()) {
+            if (!shelfCheckBoxes.get(0).isSelected()) {
                 gui.getBookRoom().deleteBookFromBookRoom(book);
             } else {
-                String title = titleField.getText();
-                String author = authorField.getText();
-                String genreString = genreField.getText();
-                Genre genre = Genre.getGenreFromString(genreString);
-                String ratingString = ratingField.getText();
-                int rating = makeRatingInt(ratingString);
-                String review = reviewField.getText();
-
+                String title = Book.makeTitleRightLengthForGui(titleField.getText());
+                if (title.equals("") || !gui.getBookRoom().checkBookDoesNotAlreadyExist(title)) {
+                    title = book.getTitle();
+                }
+                String author = Book.makeAuthorRightLengthForGui(authorField.getText());
+                Genre genre = Genre.getGenreFromString(genreField.getText());
+                int rating = Book.makeRatingInt(ratingField.getText());
+                String review = Book.makeReviewRightLengthForGui(reviewField.getText());
                 book.setAllBookFields(title, author, genre, rating, review);
 
                 addToSelectedShelves(book);
+                gui.changeBookDisplay(book);
             }
             gui.changeToChangePanel();
         }
-    }
-
-    //EFFECTS: converts string to valid rating int for book, return -1 if ratingString not between 1 and 10
-    private int makeRatingInt(String ratingString) {
-        int rating;
-        try {
-            rating = Integer.parseInt(ratingString);
-            if (!Book.checkRatingIsValid(rating)) {
-                rating = -1;
-            }
-
-        } catch (NumberFormatException nfe) {
-            rating = -1;
+        if (gui.getCurrentlyDisplayedBookshelf() != null) {
+            gui.changeBooksDisplay(gui.getCurrentlyDisplayedBookshelf(), gui.getCurrentPage());
         }
-        return rating;
     }
 
     //MODIFIES: gui
     //EFFECTS: if user presses enter after inputting title, sends user to panel for editing book fields
     private void goToEditBookFieldsView() {
-        List<Book> allBooks = gui.getAllBooks().getBooksOnShelf();
+        List<Book> allBooks = gui.getShelfWithLabel("All Books").getBooksOnShelf();
         String input = inputField.getText();
+        Book inputBook = new Book(input);
 
-        for (Book b : allBooks) {
-            if (input.equalsIgnoreCase(b.getTitle())) {
-                gui.changeToEditBookFieldsView(b);
+        if (allBooks.contains(inputBook)) {
+            for (Book b : allBooks) {
+                if (input.equalsIgnoreCase(b.getTitle())) {
+                    gui.changeToEditBookFieldsView(b);
+                }
             }
+        } else {
+            gui.changeToChangePanel();
         }
     }
 
     //MODIFIES: this
     //EFFECTS: checks which boxes have been checked and adds/removes book from appropriate shelves
-    private void addToSelectedShelves(Book book) {
-        if (toReadCheckBox.isSelected()) {
-            gui.getToRead().addBookToShelf(book);
-        } else {
-            gui.getToRead().removeBookFromShelf(book);
-        }
-
-        if (completedCheckBox.isSelected()) {
-            gui.getCompleted().addBookToShelf(book);
-        } else {
-            gui.getCompleted().removeBookFromShelf(book);
-        }
-
-        if (favouritesCheckBox.isSelected()) {
-            gui.getFavourites().addBookToShelf(book);
-        } else {
-            gui.getFavourites().removeBookFromShelf(book);
+    private void addToSelectedShelves(Book b) {
+        List<Bookshelf> shelves = gui.getBookRoom().getShelves();
+        for (int i = 1; i <= shelves.size() - 1; i++) {
+            if (shelfCheckBoxes.get(i).isSelected()) {
+                shelves.get(i).addBookToShelf(b);
+            } else {
+                shelves.get(i).removeBookFromShelf(b);
+            }
         }
     }
 }

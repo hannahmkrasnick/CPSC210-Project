@@ -3,6 +3,8 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.util.Objects;
+
 // Represents a book having a title, author, genre, rating, and review
 public class Book implements Writable {
     private String title;
@@ -24,7 +26,8 @@ public class Book implements Writable {
     }
 
     //REQUIRES: none of the parameters are null
-    //EFFECTS: creates a book with given title, author, genre, rating, and review
+    //EFFECTS: creates a book with given title (max 20 characters), author (max 25 characters, genre, rating,
+    // and review (max 500 characters)
     public Book(String title, String author, Genre genre, int rating, String review) {
         this.title = title;
         this.author = author;
@@ -101,6 +104,66 @@ public class Book implements Writable {
         setGenre(genre);
         setRating(rating);
         setReview(review);
+    }
+
+    //EFFECTS: returns a string trimmed to 20 characters or less
+    public static String makeTitleRightLengthForGui(String title) {
+        if (title.length() > 20) {
+            return title.substring(0, 20);
+        } else {
+            return title;
+        }
+    }
+
+    //EFFECTS: returns a string trimmed to 25 characters or less
+    public static String makeAuthorRightLengthForGui(String author) {
+        if (author.length() > 25) {
+            return author.substring(0, 25);
+        } else {
+            return author;
+        }
+    }
+
+    //EFFECTS: converts string to valid rating int for book, return -1 if ratingString not between 1 and 10
+    public static int makeRatingInt(String ratingString) {
+        int rating;
+        try {
+            rating = Integer.parseInt(ratingString);
+            if (!checkRatingIsValid(rating)) {
+                return -1;
+            }
+        } catch (NumberFormatException nfe) {
+            return -1;
+        }
+        return rating;
+    }
+
+    //EFFECTS: returns a string trimmed to 400 characters or less
+    public static String makeReviewRightLengthForGui(String review) {
+        if (review.length() > 400) {
+            return review.substring(0, 400);
+        } else {
+            return review;
+        }
+    }
+
+    //EFFECTS: compares if books are equal based on their title
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Book)) {
+            return false;
+        }
+        Book book = (Book) o;
+        return title.equalsIgnoreCase(book.title);
+    }
+
+    //EFFECTS: initiates a book's hash code as based on their title
+    @Override
+    public int hashCode() {
+        return Objects.hash(title);
     }
 }
 
