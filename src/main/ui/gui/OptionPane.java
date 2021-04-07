@@ -68,4 +68,17 @@ public class OptionPane extends JFrame {
 
         AudioPlayer.player.start(audioStream);
     }
+
+    //EFFECTS: tells user there was an issue initializing the Book Room and closes application
+    public void errorInitiatingBookRoom() {
+        JOptionPane.showMessageDialog(null, "Error loading Book Room", "Load Error",
+                JOptionPane.ERROR_MESSAGE);
+        System.exit(-1);
+    }
+
+    //EFFECTS: tells user there was an error
+    public void generalErrorPain(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
 }

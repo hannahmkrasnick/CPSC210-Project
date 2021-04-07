@@ -1,5 +1,6 @@
 package ui;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
@@ -56,9 +57,14 @@ public class MyBookRoom {
 
         bookRoom = new BookRoom("My Book Room");
         allBooks = new Bookshelf("All Books");
-        bookRoom.addShelfToRoom(allBooks);
-        bookRoom.addShelfToRoom(toRead);
-        bookRoom.addShelfToRoom(completed);
+        try {
+            bookRoom.addShelfToRoom(allBooks);
+            bookRoom.addShelfToRoom(toRead);
+            bookRoom.addShelfToRoom(completed);
+        } catch (DuplicateBookshelfNameException e) {
+            System.out.println("Cannot add duplicate bookshelves to room");
+            System.exit(-1);
+        }
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -125,11 +131,11 @@ public class MyBookRoom {
     private void addNewShelf() {
         System.out.println("What would you like to call your new bookshelf?");
         String label = input.next() + input.nextLine();
-        if (bookRoom.checkBookshelfDoesNotAlreadyExist(label)) {
-            Bookshelf newShelf = new Bookshelf(label);
+        Bookshelf newShelf = new Bookshelf(label);
+        try {
             bookRoom.addShelfToRoom(newShelf);
             System.out.println("Bookshelf " + label + " has been added to your Book Room");
-        } else {
+        } catch (DuplicateBookshelfNameException e) {
             System.out.println("Cannot add bookshelf that already exists.");
         }
     }
@@ -272,7 +278,7 @@ public class MyBookRoom {
     private void editBookTitle(Book book) {
         System.out.print("Enter title of book: ");
         String title = input.next() + input.nextLine();
-        if (book.getTitle().toLowerCase().equals(title.toLowerCase()) || bookRoom.checkBookDoesNotAlreadyExist(title)) {
+        if (book.getTitle().equalsIgnoreCase(title) || bookRoom.checkBookDoesNotAlreadyExist(title)) {
             book.setTitle(title);
             System.out.println("Title of book has been set to " + title);
             editBookInfo(book);
@@ -574,6 +580,8 @@ public class MyBookRoom {
         try {
             bookRoom = jsonReader.read();
             System.out.println("Loaded " + bookRoom.getName() + " from " + JSON_STORE);
+        } catch (DuplicateBookshelfNameException e) {
+            System.out.println("Issue with file: " + JSON_STORE);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }

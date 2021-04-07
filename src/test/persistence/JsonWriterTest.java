@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
@@ -60,7 +61,7 @@ class JsonWriterTest extends JsonTest {
             assertEquals(0, bookRoom.getShelves().size());
             assertEquals(0, bookRoom.getBooks().size());
 
-        } catch (IOException e) {
+        } catch (IOException | DuplicateBookshelfNameException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -108,6 +109,8 @@ class JsonWriterTest extends JsonTest {
 
 
         } catch (IOException e) {
+            fail("Exception should not have been thrown");
+        } catch (DuplicateBookshelfNameException e) {
             fail("Exception should not have been thrown");
         }
     }

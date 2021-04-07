@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
@@ -34,7 +35,7 @@ class JsonReaderTest extends JsonTest {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderNonExistentFile)
     @Test
-    void testReaderNonExistentFile() {
+    void testReaderNonExistentFile() throws DuplicateBookshelfNameException {
         JsonReader reader = new JsonReader("./data/doesNotExist.json");
         try {
             BookRoom br = reader.read();
@@ -46,7 +47,7 @@ class JsonReaderTest extends JsonTest {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderEmptyWorkRoom)
     @Test
-    void testReaderEmptyBookRoom() {
+    void testReaderEmptyBookRoom() throws DuplicateBookshelfNameException {
         JsonReader reader = new JsonReader("./data/testReaderEmptyBookRoom.json");
         try {
             BookRoom br = reader.read();
@@ -61,7 +62,7 @@ class JsonReaderTest extends JsonTest {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderGeneralWorkRoom)
     @Test
-    void testReaderExampleBookRoomNoDuplicateObjects() {
+    void testReaderExampleBookRoomNoDuplicateObjects() throws DuplicateBookshelfNameException {
         JsonReader reader = new JsonReader("./data/testReaderExampleBookRoomNoDuplicates.json");
         try {
             BookRoom br = reader.read();
@@ -93,7 +94,7 @@ class JsonReaderTest extends JsonTest {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReaderTest.testReaderGeneralWorkRoom)
     @Test
-    void testReaderExampleBookRoomDuplicateObjects() {
+    void testReaderExampleBookRoomDuplicateObjects() throws DuplicateBookshelfNameException {
         JsonReader reader = new JsonReader("./data/testReaderExampleBookRoom.json");
         try {
             BookRoom br = reader.read();

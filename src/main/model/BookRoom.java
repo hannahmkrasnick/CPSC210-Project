@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.DuplicateBookshelfNameException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
@@ -12,24 +13,34 @@ public class BookRoom implements Writable {
     private final String name;
     private final List<Bookshelf> shelves;
 
-    //REQUIRES: book room name has non-zero length
-    //EFFECTS: creates a room with given name and empty list of bookshelves
+    //EFFECTS: creates a room with given name and empty list of bookshelves, if initialized with empty string, name is
+    //         changed to "My Book Room"
     public BookRoom(String name) {
-        this.name = name;
+        if (name.equals("")) {
+            this.name = "My Book Room";
+        } else {
+            this.name = name;
+        }
         shelves = new ArrayList<>();
     }
 
     //MODIFIES: this
-    //EFFECTS: adds shelf to this
-    public void addShelfToRoom(Bookshelf bookshelf) {
-        this.shelves.add(bookshelf);
+    //EFFECTS: adds shelf to this, throws DuplicateBookshelfNameException if bookshelf with same name already exists in
+    //         book room
+    public void addShelfToRoom(Bookshelf bookshelf) throws DuplicateBookshelfNameException {
+        if (this.shelves.contains(bookshelf)) {
+            throw new DuplicateBookshelfNameException("Cannot add bookshelf with duplicate name.");
+        } else {
+            this.shelves.add(bookshelf);
+        }
     }
 
-    //REQUIRES: shelf must be in book room
     //MODIFIES: this
     //EFFECTS: removes shelf from this
     public void deleteShelfFromRoom(Bookshelf bookshelf) {
-        this.shelves.remove(bookshelf);
+        if (this.shelves.contains(bookshelf)) {
+            this.shelves.remove(bookshelf);
+        }
     }
 
     //EFFECTS: checks if the given label isn't already the label of an existing bookshelf in the room

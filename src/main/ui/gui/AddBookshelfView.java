@@ -1,5 +1,6 @@
 package ui.gui;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Bookshelf;
 
 import javax.swing.*;
@@ -48,11 +49,16 @@ public class AddBookshelfView extends ChangePanel implements ActionListener {
         if (e.getActionCommand().equals(newline)) {
             String input = Bookshelf.makeLabelRightLengthForGui(inputField.getText());
             Bookshelf newShelf = new Bookshelf(input);
-            if (!shelves.contains(newShelf) && !input.equals("") && (shelves.size() < 8)) {
-                shelves.add(newShelf);
-                gui.changeBookshelvesView();
+            try {
+                if (!input.equals("") && (shelves.size() < 8)) {
+                    gui.getBookRoom().addShelfToRoom(newShelf);
+                    gui.changeBookshelvesView();
+                }
+            } catch (DuplicateBookshelfNameException de) {
+                gui.getOptionPane().generalErrorPain(de.getMessage());
+            } finally {
+                gui.changeToChangePanel();
             }
         }
-        gui.changeToChangePanel();
     }
 }

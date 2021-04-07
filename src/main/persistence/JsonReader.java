@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
@@ -30,7 +31,7 @@ public class JsonReader {
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReader.read)
     // EFFECTS: reads bookroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public BookRoom read() throws IOException {
+    public BookRoom read() throws IOException, DuplicateBookshelfNameException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
         return parseBookRoom(jsonObject);
@@ -50,7 +51,7 @@ public class JsonReader {
 
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReader.parseWorkRoom)
     // EFFECTS: parses bookroom from JSON object and returns it
-    private BookRoom parseBookRoom(JSONObject jsonObject) {
+    private BookRoom parseBookRoom(JSONObject jsonObject) throws DuplicateBookshelfNameException {
         String name = jsonObject.getString("name");
         BookRoom br = new BookRoom(name);
         addShelves(br, jsonObject);
@@ -60,7 +61,7 @@ public class JsonReader {
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReader.addThingies)
     // MODIFIES: br
     // EFFECTS: parses shelves from JSON object and adds them to bookroom
-    private void addShelves(BookRoom br, JSONObject jsonObject) {
+    private void addShelves(BookRoom br, JSONObject jsonObject) throws DuplicateBookshelfNameException {
         JSONArray jsonArray = jsonObject.getJSONArray("bookshelves");
         for (Object json : jsonArray) {
             JSONObject nextShelf = (JSONObject) json;
@@ -71,7 +72,7 @@ public class JsonReader {
     // solution adapted from JsonSerializationDemo CPSC 210 program (JsonReader.addThingy)
     // MODIFIES: br
     // EFFECTS: parses shelf from JSON object and adds it to bookroom
-    private void addShelf(BookRoom br, JSONObject jsonObject) {
+    private void addShelf(BookRoom br, JSONObject jsonObject) throws DuplicateBookshelfNameException {
         String label = jsonObject.getString("label");
         Bookshelf bookshelf = new Bookshelf(label);
         addBooks(bookshelf, jsonObject);

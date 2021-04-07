@@ -29,3 +29,7 @@ book to be able to appear on more than one bookshelf
 - As a user, I want to be view my shelves and which books are on those shelves
 - As a user, I want to be able to save my Book Room to file
 - As a user, I want to be able to load my Book Room from file
+
+## Phase 4: Task 2
+I chose to implement the first option. I made my BookRoom class robust, and made addShelfToRoom throw a 
+DuplicateBookshelfNameException if someone tries to add a shelf to the room when it already exists.

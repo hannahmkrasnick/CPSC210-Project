@@ -1,5 +1,6 @@
 package ui.gui;
 
+import exceptions.DuplicateBookshelfNameException;
 import model.Book;
 import model.BookRoom;
 import model.Bookshelf;
@@ -266,10 +267,14 @@ public class BookRoomApplication extends JFrame {
         favourites = new Bookshelf("Favourites");
 
         bookRoom = new BookRoom("My Book Room");
-        bookRoom.addShelfToRoom(allBooks);
-        bookRoom.addShelfToRoom(toRead);
-        bookRoom.addShelfToRoom(completed);
-        bookRoom.addShelfToRoom(favourites);
+        try {
+            bookRoom.addShelfToRoom(allBooks);
+            bookRoom.addShelfToRoom(toRead);
+            bookRoom.addShelfToRoom(completed);
+            bookRoom.addShelfToRoom(favourites);
+        } catch (DuplicateBookshelfNameException e) {
+            optionPane.errorInitiatingBookRoom();
+        }
 
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -332,7 +337,7 @@ public class BookRoomApplication extends JFrame {
         try {
             bookRoom = jsonReader.read();
             revalidate();
-        } catch (IOException e) {
+        } catch (IOException | DuplicateBookshelfNameException e) {
             optionPane.loadError();
         }
     }
@@ -352,5 +357,9 @@ public class BookRoomApplication extends JFrame {
         //EFFECTS: runs application
     public static void main(String[] args) {
         new BookRoomApplication();
+    }
+
+    public OptionPane getOptionPane() {
+        return this.optionPane;
     }
 }
