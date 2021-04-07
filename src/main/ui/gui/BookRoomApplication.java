@@ -22,10 +22,6 @@ public class BookRoomApplication extends JFrame {
     private int panelHeight = 300;
 
     private BookRoom bookRoom;
-    private Bookshelf allBooks;
-    private Bookshelf completed;
-    private Bookshelf toRead;
-    private Bookshelf favourites;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
     private GridBagConstraints constraints;
@@ -261,10 +257,10 @@ public class BookRoomApplication extends JFrame {
     // MODIFIES: this
     // EFFECTS: initializes BookRoom with number of bookshelves
     private void init() {
-        allBooks = new Bookshelf("All Books");
-        toRead = new Bookshelf("To Read");
-        completed = new Bookshelf("Completed");
-        favourites = new Bookshelf("Favourites");
+        Bookshelf allBooks = new Bookshelf("All Books");
+        Bookshelf toRead = new Bookshelf("To Read");
+        Bookshelf completed = new Bookshelf("Completed");
+        Bookshelf favourites = new Bookshelf("Favourites");
 
         bookRoom = new BookRoom("My Book Room");
         try {

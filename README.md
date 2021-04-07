@@ -33,3 +33,9 @@ book to be able to appear on more than one bookshelf
 ## Phase 4: Task 2
 I chose to implement the first option. I made my BookRoom class robust, and made addShelfToRoom throw a 
 DuplicateBookshelfNameException if someone tries to add a shelf to the room when it already exists.
+
+## Phase 4: Task 3
+If I had time, I might consider making the following changes:
+- Creating a clearer hierarchy in the GUI (i.e. every component of the main frame has its own superclass, and then
+  subclasses for various functionalities). I have this somewhat but I think it could be neater and done better.
+- I would add more exceptions to account for text limits in fields, number of bookshelves you can add, etc.

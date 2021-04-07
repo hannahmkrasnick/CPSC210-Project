@@ -38,9 +38,7 @@ public class BookRoom implements Writable {
     //MODIFIES: this
     //EFFECTS: removes shelf from this
     public void deleteShelfFromRoom(Bookshelf bookshelf) {
-        if (this.shelves.contains(bookshelf)) {
-            this.shelves.remove(bookshelf);
-        }
+        this.shelves.remove(bookshelf);
     }
 
     //EFFECTS: checks if the given label isn't already the label of an existing bookshelf in the room

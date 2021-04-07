@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 public class BookshelfView extends JPanel implements ActionListener {
     private Bookshelf bookshelf;
     private BookRoomApplication gui;
-    private Color color = new Color(253, 211, 187);
     private int width;
     private int height;
     private GridBagConstraints constraints;
@@ -28,6 +27,7 @@ public class BookshelfView extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(width / 2, calculateBookshelfHeight()));
         Border lineBorder = BorderFactory.createLineBorder(Color.WHITE,4);
         setBorder(lineBorder);
+        Color color = new Color(253, 211, 187);
         setBackground(color);
         JLabel label = new JLabel(bs.getBookshelfLabel());
         JButton viewButton = new JButton("View");
